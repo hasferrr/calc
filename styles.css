@@ -1,12 +1,18 @@
-#container {
-    border: 1px solid gray;
+#main {
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    background-color: #23272e;
+    border-radius: 30px;
 }
 
 .row {
     display: flex;
+    justify-content: space-around;
 }
 
 .button {
-    border-top: 1px solid blue;
-    border-right: 1px solid blue;
+    background-color: #282f3d;
 }
