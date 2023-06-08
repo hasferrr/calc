@@ -1,0 +1,12 @@
+#container {
+    border: 1px solid gray;
+}
+
+.row {
+    display: flex;
+}
+
+.button {
+    border-top: 1px solid blue;
+    border-right: 1px solid blue;
+}
