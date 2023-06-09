@@ -28,9 +28,18 @@ class Calculator {
      */
     constructor(container) {
         this.container = container;
+
+        /** @type {String | undefined} */
         this.operator = undefined;
+
+        /** @type {number | undefined} */
         this.result = 0;
-        this.operand = 0;
+
+        /** @type {number | undefined} */
+        this.operandLeft = 0;
+
+        /** @type {number | undefined} */
+        this.operandRight = 0;
     }
 }
 
@@ -153,8 +162,14 @@ class Functionality extends Calculator {
         this.buttons.forEach(button => {
             button.addEventListener('click', () => {
                 let value = Functionality.buttonClass.get(button.classList[1]);
+                console.log(value);
                 if (!Number.isNaN(Number(value))) {
-                    /// DO SMTH
+                    if (this.result !== 0) {
+                        this.result = Number(value);
+                    }
+                }
+                else {
+                    this.enableClickToAssignOperator();
                 }
             })
         })
@@ -200,3 +215,6 @@ calc.displayCalculatorScreen();
 calc.displayButton();
 calc.displayButtonText();
 calc.displayCalculationText();
+
+let funcCalc = new Functionality(calc.container);
+funcCalc.enableClickToAssignNumber();
