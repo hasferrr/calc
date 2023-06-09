@@ -9,7 +9,7 @@ let operandLeft;
 let operandRight;
 
 document.querySelector('#main')?.appendChild(container);
-container.className = 'container';
+container.classList.add('container');
 container.style.width = WIDTH + 'px';
 container.style.height = HEIGHT + 'px';
 
@@ -18,10 +18,18 @@ displayButton();
 roundButton();
 displayButtonText();
 displayCalculationText();
+addClassButton();
+
+enableClickToAssignNumber();
+enableClickToAssignOperator();
+enableEvaluate();
+enableDeleteButton();
+enableClearButton();
+
 
 function displayCalculatorScreen() {
     const display = document.createElement('div');
-    display.className = 'display';
+    display.classList.add('display');
     display.style.width = WIDTH + 'px';
     display.style.height = HEIGHT * (1 - 0.625) + 'px';
 
@@ -30,12 +38,12 @@ function displayCalculatorScreen() {
 
 function displayButton() {
     const row = document.createElement('div');
-    row.className = 'row';
+    row.classList.add('row');
     row.style.width = WIDTH + 'px';
     row.style.height = HEIGHT * 0.625 / 5 + 'px';
 
     const button = document.createElement('div')
-    button.className = 'button';
+    button.classList.add('button');
     button.style.width = WIDTH / 4 + 'px';
     button.style.height = HEIGHT * 0.625 / 5 + 'px';
 
@@ -104,6 +112,20 @@ function displayCalculationText() {
     display?.appendChild(box.cloneNode(true));
 }
 
+
+function addClassButton() { }
+function enableClickToAssignNumber() { }
+function enableClickToAssignOperator() { }
+function enableEvaluate() { }
+function enableDeleteButton() { }
+function enableClearButton() { }
+
+
+/**
+ * @param {(arg0: number, arg1: number) => number} operator
+ * @param {number} a
+ * @param {number} b
+ */
 function operate(operator, a, b) {
     return operator(a, b)
 }
@@ -112,16 +134,13 @@ function add(a, b) {
     return a + b
 }
 
-
 function subtract(a, b) {
     return a - b
 }
 
-
 function multiply(a, b) {
     return a * b
 }
-
 
 function divide(a, b) {
     return a / b
