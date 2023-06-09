@@ -71,7 +71,7 @@ function displayButtonText() {
         '4', '5', '6', '-',
         '1', '2', '3', '+',
         '', '0', '.', '='];
-    const buttons = document.querySelectorAll('.button');
+    const buttons = container.querySelectorAll('.button');
     for (let i = 0; i < buttons.length; i++) {
         buttons[i].textContent = symbol[i];
     }
@@ -113,7 +113,28 @@ function displayCalculationText() {
 }
 
 
-function addClassButton() { }
+function addClassButton() {
+    const classWishList = [
+        ['btn-ac', 'btn-div', 'btn-mult', 'btn-del'],
+        ['btn-7', 'btn-8', 'btn-9', 'btn-percent'],
+        ['btn-4', 'btn-5', 'btn-6', 'btn-sub'],
+        ['btn-1', 'btn-2', 'btn-3', 'btn-add'],
+        ['', 'btn-0', 'btn-dot', 'btn-equal']
+    ];
+
+    const rows = container.querySelectorAll('.row');
+
+    for (let i = 0; i < rows.length; i++) {
+        let row = rows[i];
+        let buttons = row.querySelectorAll('.button');
+
+        for (let j = 0; j < buttons.length; j++) {
+            let button = buttons[j];
+            button.classList.add(classWishList[i][j]);
+        }
+    }
+}
+
 function enableClickToAssignNumber() { }
 function enableClickToAssignOperator() { }
 function enableEvaluate() { }
