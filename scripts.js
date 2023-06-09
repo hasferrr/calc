@@ -1,44 +1,13 @@
 // @ts-check
 class Calculator {
-    static buttonClass = new Map([
-        ['btn-ac', 'AC'],
-        ['btn-div', '/'],
-        ['btn-mult', 'x'],
-        ['btn-del', 'DEL'],
-        ['btn-7', '7'],
-        ['btn-8', '8'],
-        ['btn-9', '9'],
-        ['btn-percent', '%'],
-        ['btn-4', '4'],
-        ['btn-5', '5'],
-        ['btn-6', '6'],
-        ['btn-sub', '-'],
-        ['btn-1', '1'],
-        ['btn-2', '2'],
-        ['btn-3', '3'],
-        ['btn-add', '+'],
-        ['btn-empty', ''],
-        ['btn-0', '0'],
-        ['btn-dot', '.'],
-        ['btn-equal', '=']
-    ]);
-
     /**
      * @param {HTMLElement} container
      */
     constructor(container) {
         this.container = container;
-
-        /** @type {String | undefined} */
         this.operator = undefined;
-
-        /** @type {number | undefined} */
         this.result = 0;
-
-        /** @type {number | undefined} */
         this.operandLeft = 0;
-
-        /** @type {number | undefined} */
         this.operandRight = 0;
     }
 }
@@ -47,6 +16,28 @@ class DisplayCalculator extends Calculator {
     static SCALE = 1.15;
     static WIDTH = 290 * DisplayCalculator.SCALE;
     static HEIGHT = 560 * DisplayCalculator.SCALE;
+    static buttonClass = [
+        ['btn-tool', 'AC'],
+        ['btn-operator', '/'],
+        ['btn-operator', 'x'],
+        ['btn-tool', 'DEL'],
+        ['btn-num', '7'],
+        ['btn-num', '8'],
+        ['btn-num', '9'],
+        ['btn-changenum', '%'],
+        ['btn-num', '4'],
+        ['btn-num', '5'],
+        ['btn-num', '6'],
+        ['btn-operator', '-'],
+        ['btn-num', '1'],
+        ['btn-num', '2'],
+        ['btn-num', '3'],
+        ['btn-operator', '+'],
+        ['btn-empty', ''],
+        ['btn-num', '0'],
+        ['btn-changenum', '.'],
+        ['btn-operator', '=']
+    ];
 
     /**
      * @param {HTMLElement} container
@@ -72,8 +63,7 @@ class DisplayCalculator extends Calculator {
         row.style.width = DisplayCalculator.WIDTH + 'px';
         row.style.height = DisplayCalculator.HEIGHT * 0.625 / 5 + 'px';
 
-        const button = document.createElement('div')
-        button.classList.add('button');
+        const button = document.createElement('button')
         button.style.width = DisplayCalculator.WIDTH / 4 + 'px';
         button.style.height = DisplayCalculator.HEIGHT * 0.625 / 5 + 'px';
 
@@ -85,18 +75,16 @@ class DisplayCalculator extends Calculator {
             this.container.appendChild(row.cloneNode(true));
         }
 
-        this.#addClassButton();
+        this.#addClassAndDataAttrButton();
         this.#roundButton();
     }
 
-    #addClassButton() {
-        const classWishList = Array.from(DisplayCalculator.buttonClass.keys());
-
-        const buttons = this.container.querySelectorAll('.button');
-
-        for (let j = 0; j < buttons.length; j++) {
-            let button = buttons[j];
-            button.classList.add(classWishList[j]);
+    #addClassAndDataAttrButton() {
+        const buttons = this.container.querySelectorAll('button');
+        for (let i = 0; i < buttons.length; i++) {
+            let button = buttons[i];
+            button.classList.add(DisplayCalculator.buttonClass[i][0]);
+            button.dataset.value = DisplayCalculator.buttonClass[i][1];
         }
     }
 
@@ -109,10 +97,10 @@ class DisplayCalculator extends Calculator {
     }
 
     displayButtonText() {
-        const symbol = Array.from(DisplayCalculator.buttonClass.values());
-        const buttons = this.container.querySelectorAll('.button');
+        const buttons = this.container.querySelectorAll('button');
         for (let i = 0; i < buttons.length; i++) {
-            buttons[i].textContent = symbol[i];
+            let button = buttons[i];
+            button.textContent = DisplayCalculator.buttonClass[i][1];
         }
     }
 
@@ -155,22 +143,13 @@ class DisplayCalculator extends Calculator {
 class Functionality extends Calculator {
     constructor(container) {
         super(container);
-        this.buttons = this.container.querySelectorAll('.button');
+        this.buttons = this.container.querySelectorAll('button');
     }
 
     enableClickToAssignNumber() {
         this.buttons.forEach(button => {
             button.addEventListener('click', () => {
-                let value = Functionality.buttonClass.get(button.classList[1]);
-                console.log(value);
-                if (!Number.isNaN(Number(value))) {
-                    if (this.result !== 0) {
-                        this.result = Number(value);
-                    }
-                }
-                else {
-                    this.enableClickToAssignOperator();
-                }
+                console.log(button); // #TODO
             })
         })
     }
