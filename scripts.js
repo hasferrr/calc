@@ -1,23 +1,25 @@
 // @ts-check
 const container = document.createElement('div');
-document.querySelector('#main')?.appendChild(container);
-
-const WIDTH = 280 * 1.1;
-const HEIGHT = 560 * 1.1;
+const SCALE = 1.15;
+const WIDTH = 290 * SCALE;
+const HEIGHT = 560 * SCALE;
 
 let operator;
 let operandLeft;
 let operandRight;
 
+document.querySelector('#main')?.appendChild(container);
 container.className = 'container';
 container.style.width = WIDTH + 'px';
 container.style.height = HEIGHT + 'px';
 
-displayCalculatorDisplay();
+displayCalculatorScreen();
 displayButton();
 roundButton();
+displayButtonText();
+displayCalculationText();
 
-function displayCalculatorDisplay() {
+function displayCalculatorScreen() {
     const display = document.createElement('div');
     display.className = 'display';
     display.style.width = WIDTH + 'px';
@@ -34,8 +36,8 @@ function displayButton() {
 
     const button = document.createElement('div')
     button.className = 'button';
-    button.style.width = WIDTH / 4 - 2 + 'px';
-    button.style.height = HEIGHT * 0.625 / 5 - 2 + 'px';
+    button.style.width = WIDTH / 4 + 'px';
+    button.style.height = HEIGHT * 0.625 / 5 + 'px';
 
     for (let i = 0; i < 4; i++) {
         row.appendChild(button.cloneNode(true));
@@ -52,6 +54,54 @@ function roundButton() {
     lastRow.firstElementChild.style.borderBottomLeftRadius = '30px';
     // @ts-ignore
     lastRow.lastElementChild.style.borderBottomRightRadius = '30px';
+}
+
+function displayButtonText() {
+    const symbol = [
+        'AC', '/', 'x', 'DEL',
+        '7', '8', '9', '%',
+        '4', '5', '6', '-',
+        '1', '2', '3', '+',
+        '', '0', '.', '='];
+    const buttons = document.querySelectorAll('.button');
+    for (let i = 0; i < buttons.length; i++) {
+        buttons[i].textContent = symbol[i];
+    }
+}
+
+function displayCalculationText() {
+    const display = document.querySelector('.display');
+    const calculations = document.createElement('div');
+    const result = document.createElement('div');
+    const box = document.createElement('div');
+
+    //@ts-ignore
+    const DISPLAY_HEIGHT = Number(display.style.height.slice(0, -2)); //remove 'px'
+
+    calculations.classList.add('calculations');
+    result.classList.add('result');
+
+    let height = 80;
+    let width = WIDTH / SCALE - 35;
+
+    box.style.height = `${20 * SCALE}px`;
+    calculations.style.height = `${DISPLAY_HEIGHT - height * SCALE}px`;
+    result.style.height = `${height * SCALE}px`;
+
+    calculations.style.width = `${width * SCALE}px`;
+    result.style.width = `${width * SCALE}px`;
+
+    calculations.style.fontSize = `${18 * SCALE}px`;
+    result.style.fontSize = `${42 * SCALE}px`;
+
+    calculations.textContent = '13 x 15';
+    result.textContent = '650';
+
+    // Append to .display
+    display?.appendChild(box);
+    display?.appendChild(calculations);
+    display?.appendChild(result);
+    display?.appendChild(box.cloneNode(true));
 }
 
 function operate(operator, a, b) {
