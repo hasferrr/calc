@@ -1,3 +1,3 @@
-# calc
+# Calc
 
-Practice DOM Manipulation
+Practice DOM Manipulation using Object-Oriented Programming

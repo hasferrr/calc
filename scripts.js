@@ -133,38 +133,40 @@ class DisplayCalculator extends Calculator {
     }
 }
 
-function enableClickToAssignNumber() { }
-function enableClickToAssignOperator() { }
-function enableEvaluate() { }
-function enableDeleteButton() { }
-function enableClearButton() { }
-
-
-/**
- * @param {(arg0: number, arg1: number) => number} operator
- * @param {number} a
- * @param {number} b
- */
-function operate(operator, a, b) {
-    return operator(a, b)
+class Functionality extends Calculator {
+    enableClickToAssignNumber() { }
+    enableClickToAssignOperator() { }
+    enableEvaluate() { }
+    enableDeleteButton() { }
+    enableClearButton() { }
 }
 
-function add(a, b) {
-    return a + b
-}
+class Operator extends Calculator {
+    /**
+     * @param {(arg0: number, arg1: number) => number} operator
+     * @param {number} a
+     * @param {number} b
+     */
+    operate(operator, a, b) {
+        return operator(a, b)
+    }
 
-function subtract(a, b) {
-    return a - b
-}
+    add(a, b) {
+        return a + b
+    }
 
-function multiply(a, b) {
-    return a * b
-}
+    subtract(a, b) {
+        return a - b
+    }
 
-function divide(a, b) {
-    return a / b
-}
+    multiply(a, b) {
+        return a * b
+    }
 
+    divide(a, b) {
+        return a / b
+    }
+}
 
 //@ts-ignore
 const calc = new DisplayCalculator(document.querySelector('.container'));
@@ -173,9 +175,3 @@ calc.displayCalculatorScreen();
 calc.displayButton();
 calc.displayButtonText();
 calc.displayCalculationText();
-
-enableClickToAssignNumber();
-enableClickToAssignOperator();
-enableEvaluate();
-enableDeleteButton();
-enableClearButton();
