@@ -182,6 +182,7 @@ class Functionality extends Calculator {
             } else if (button.classList.contains('btn-equal')) {
                 button.addEventListener('click', () => {
                     if (this.#checkEqualButton()) {
+                        this.operandRight = Number(this.result);
                         this.#handleEqualButton(this.operandLeft, this.operandRight);
                         DisplayCalculator.displayCalculation(this.operandLeft, this.operandRight,
                             this.operator, calculationField);
@@ -238,11 +239,7 @@ class Functionality extends Calculator {
     }
 
     #checkEqualButton() {
-        if (this.result !== '' && this.operator !== '' && this.operandLeft !== undefined) {
-            this.operandRight = Number(this.result);
-            return true;
-        }
-        return false;
+        return this.result !== '' && this.operator !== '' && this.operandLeft !== undefined
     }
 
     #handleEqualButton(a, b) {
