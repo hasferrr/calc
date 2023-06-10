@@ -1,4 +1,5 @@
 // @ts-check
+
 class Calculator {
     /**
      * @param {HTMLElement} container
@@ -49,6 +50,9 @@ class DisplayCalculator extends Calculator {
     static WIDTH = 290 * DisplayCalculator.SCALE;
     static HEIGHT = 560 * DisplayCalculator.SCALE;
 
+    /**
+     * @param {HTMLElement} container
+     */
     constructor(container) {
         super(container);
         container.style.width = DisplayCalculator.WIDTH + 'px';
@@ -164,6 +168,9 @@ class DisplayCalculator extends Calculator {
 }
 
 class Functionality extends Calculator {
+    /**
+     * @param {HTMLElement} container
+     */
     constructor(container) {
         super(container);
         this.buttons = this.container.querySelectorAll('button');
@@ -199,6 +206,8 @@ class Functionality extends Calculator {
                 button.addEventListener('click', () => {
                     if (this.#checkEqualButton()) {
                         this.operandRight = Number(this.typedNumber);
+
+                        //@ts-ignore
                         this.#handleEqualButton(this.operandLeft, this.operandRight);
 
                         DisplayCalculator.displayCalculation(this.operandLeft, this.operandRight,
@@ -265,6 +274,10 @@ class Functionality extends Calculator {
             && this.operandLeft !== undefined
     }
 
+    /**
+     * @param {number} a
+     * @param {number} b
+     */
     #handleEqualButton(a, b) {
         if (this.operator === '+') {
             this.result = Operator.add(a, b);
@@ -303,25 +316,41 @@ class Functionality extends Calculator {
 }
 
 class Operator {
+    /**
+     * @param {number} a
+     * @param {number} b
+     */
     static add(a, b) {
         return a + b
     }
 
+    /**
+     * @param {number} a
+     * @param {number} b
+     */
     static subtract(a, b) {
         return a - b
     }
 
+    /**
+     * @param {number} a
+     * @param {number} b
+     */
     static multiply(a, b) {
         return a * b
     }
 
+    /**
+     * @param {number} a
+     * @param {number} b
+     */
     static divide(a, b) {
         return a / b
     }
 }
 
 
-let calculator;
+let calculator; //@ts-ignore
 calculator = new DisplayCalculator(document.querySelector('.container'));
 calculator.displayCalculatorScreen();
 calculator.displayButton();
