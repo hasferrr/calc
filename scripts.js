@@ -143,18 +143,13 @@ class DisplayCalculator extends Calculator {
         resultField.textContent = text;
     }
 
+    static displayCalculation(a, b, operator, calculationField) {
+        calculationField.textContent = `${a} ${operator} ${b}`;
+    }
+
     static displayClear(calculationField, resultField) {
         calculationField.textContent = '';
         resultField.textContent = '0';
-    }
-
-    static displayOperator(num, operator, calculationField) {
-        calculationField.textContent = `${num} ${operator}`;
-    }
-
-    static displayCalculationResult(a, b, operator, result, calculationField, resultField) {
-        calculationField.textContent = `${a} ${operator} ${b}`;
-        resultField.textContent = result;
     }
 }
 
@@ -179,28 +174,33 @@ class Functionality extends Calculator {
             } else if (button.classList.contains('btn-operator')) {
                 button.addEventListener('click', () => {
                     this.#handleAssignOperator(value)
-                    DisplayCalculator.displayOperator(this.operandLeft,
+                    DisplayCalculator.displayCalculation(this.operandLeft, '',
                         this.operator, calculationField);
                 })
 
             } else if (button.classList.contains('btn-equal')) {
                 button.addEventListener('click', () => {
                     this.#handleEqualButton();
-                    DisplayCalculator.displayCalculationResult(this.operandLeft, this.operandRight,
-                        this.operator, this.result, calculationField, resultField);
+                    DisplayCalculator.displayCalculation(this.operandLeft, this.operandRight,
+                        this.operator, calculationField);
+                    DisplayCalculator.displayNumber(this.result, resultField);
                     this.operandLeft = Number(this.result);
                 })
 
             } else if (button.classList.contains('btn-tool')) {
                 button.addEventListener('click', () => {
-                    this.#handleToolButton(value);
-                    DisplayCalculator.displayClear(calculationField, resultField);
+                    if (value === 'AC') {
+                        this.#handleAC();
+                        DisplayCalculator.displayClear(calculationField, resultField);
+                    } else {
+                        this.#handleDEL()
+                        DisplayCalculator.displayNumber(this.result, resultField);
+                    }
                 })
 
             } else if (button.classList.contains('btn-changenum')) {
-
+                // todo
             }
-
         })
     }
 
@@ -236,15 +236,15 @@ class Functionality extends Calculator {
         }
     }
 
-    #handleToolButton(value) {
-        if (value === "AC") {
-            this.result = '0';
-            this.operandLeft = 0;
-            this.operandRight = 0;
-            this.reset = false;
-        } else {
-            // todo
-        }
+    #handleAC() {
+        this.result = '0';
+        this.operandLeft = 0;
+        this.operandRight = 0;
+        this.reset = false;
+    }
+
+    #handleDEL() {
+        this.result = this.result.slice(0, -1);
     }
 }
 
