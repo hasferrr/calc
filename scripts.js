@@ -5,10 +5,7 @@ class Calculator {
      */
     constructor(container) {
         this.container = container;
-
-        /** @type {string | undefined} */
-        this.operator = undefined;
-
+        this.operator = '';
         this.result = '0';
         this.operandLeft = 0;
         this.operandRight = 0;
@@ -21,10 +18,10 @@ class DisplayCalculator extends Calculator {
     static WIDTH = 290 * DisplayCalculator.SCALE;
     static HEIGHT = 560 * DisplayCalculator.SCALE;
     static buttonClass = [
-        ['btn-tool', 'AC'],
+        ['btn-ac', 'AC'],
         ['btn-operator', '/'],
         ['btn-operator', 'x'],
-        ['btn-tool', 'DEL'],
+        ['btn-del', 'DEL'],
         ['btn-num', '7'],
         ['btn-num', '8'],
         ['btn-num', '9'],
@@ -187,15 +184,16 @@ class Functionality extends Calculator {
                     this.operandLeft = Number(this.result);
                 })
 
-            } else if (button.classList.contains('btn-tool')) {
+            } else if (button.classList.contains('btn-ac')) {
                 button.addEventListener('click', () => {
-                    if (value === 'AC') {
-                        this.#handleAC();
-                        DisplayCalculator.displayClear(calculationField, resultField);
-                    } else {
-                        this.#handleDEL()
-                        DisplayCalculator.displayNumber(this.result, resultField);
-                    }
+                    this.#handleAC();
+                    DisplayCalculator.displayClear(calculationField, resultField);
+                })
+
+            } else if (button.classList.contains('btn-del')) {
+                button.addEventListener('click', () => {
+                    this.#handleDEL();
+                    DisplayCalculator.displayNumber(this.result, resultField);
                 })
 
             } else if (button.classList.contains('btn-changenum')) {
@@ -225,13 +223,13 @@ class Functionality extends Calculator {
             this.operandRight = Number(this.result);
 
             if (this.operator === '+') {
-                this.result = Operator.operate(Operator.add, this.operandLeft, this.operandRight);
+                this.result = String(Operator.add(this.operandLeft, this.operandRight));
             } else if (this.operator === '-') {
-                this.result = Operator.operate(Operator.subtract, this.operandLeft, this.operandRight);
+                this.result = String(Operator.subtract(this.operandLeft, this.operandRight));
             } else if (this.operator === 'x') {
-                this.result = Operator.operate(Operator.multiply, this.operandLeft, this.operandRight);
+                this.result = String(Operator.multiply(this.operandLeft, this.operandRight));
             } else if (this.operator === '/') {
-                this.result = Operator.operate(Operator.divide, this.operandLeft, this.operandRight);
+                this.result = String(Operator.divide(this.operandLeft, this.operandRight));
             }
         }
     }
@@ -249,15 +247,6 @@ class Functionality extends Calculator {
 }
 
 class Operator {
-    /**
-     * @param {(arg0: number, arg1: number) => number} f
-     * @param {number} a
-     * @param {number} b
-     */
-    static operate(f, a, b) {
-        return String(f(a, b));
-    }
-
     static add(a, b) {
         return a + b
     }
