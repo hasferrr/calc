@@ -232,13 +232,9 @@ class Functionality extends Calculator {
     }
 
     #handleOperator(value) {
-        if (true) { //this.operandLeft === 0
-            this.operandLeft = Number(this.result);
-            this.operator = value;
-            this.reset = true;
-        } else { // TODO !!! // BUG
-            this.#handleEqualButton(this.operandLeft, Number(this.result))
-        }
+        this.operandLeft = Number(this.result);
+        this.operator = value;
+        this.reset = true;
     }
 
     #checkEqualButton() {
