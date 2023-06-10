@@ -235,10 +235,10 @@ class Functionality extends Calculator {
     }
 
     #handleOperator(value) {
-        this.operandLeft = Number(this.typedNumber);
+        this.operandLeft = this.operandLeft ? this.operandLeft : Number(this.typedNumber);
         this.operator = value;
-        this.reset = true; //!!!
-        this.typedNumber = ''
+        this.reset = true;
+        this.typedNumber = '';
     }
 
     #checkEqualButton() {
@@ -264,6 +264,7 @@ class Functionality extends Calculator {
         this.operandLeft = undefined;
         this.operandRight = undefined;
         this.reset = false;
+        this.result = undefined;
     }
 
     #handleDEL() {
