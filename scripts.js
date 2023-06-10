@@ -244,6 +244,9 @@ class Functionality extends Calculator {
 
     #handleDEL() {
         this.result = this.result.slice(0, -1);
+        if (this.result === '') {
+            this.result = '0';
+        }
     }
 }
 
