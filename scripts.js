@@ -1,19 +1,20 @@
 // @ts-check
 class Calculator {
+    /**
+     * @param {HTMLElement} container
+     */
     constructor(container) {
         this.container = container;
 
+        /** @type {string | undefined} */
         this.operator = undefined;
-        this.reset = false;
 
-        /** @type {string | null} */
-        this.result = null;
+        /** @type {string | undefined}*/
+        this.result = undefined;
 
-        /** @type {number} */
         this.operandLeft = 0;
-
-        /** @type {number} */
         this.operandRight = 0;
+        this.reset = false;
     }
 }
 
@@ -147,74 +148,78 @@ class Functionality extends Calculator {
         this.buttons = this.container.querySelectorAll('button');
     }
 
-    enableClickToAssignNumber() {
+    enableClickToAssign() {
         this.buttons.forEach(button => {
-            button.addEventListener('click', () => {
-                let value = button.dataset.value;
+            let value = button.dataset.value;
+            let calculationField = this.container.querySelector('.calculations');
+            let resultField = this.container.querySelector('.result');
 
-                /** @type {Element} *///@ts-ignore
-                let calculations = this.container.querySelector('.calculations');
+            if (button.classList.contains('btn-num')) {
+                button.addEventListener('click', () => {
+                    this.#handleAssignNumber(value, resultField)
+                })
 
-                /** @type {Element} *///@ts-ignore
-                let result = this.container.querySelector('.result');
+            } else if (button.classList.contains('btn-operator')) {
+                button.addEventListener('click', () => {
+                    this.#handleAssignOperator(value, calculationField)
+                })
 
-                if (button.classList.contains('btn-num')) {
+            } else if (button.classList.contains('btn-equal')) {
+                button.addEventListener('click', () => {
+                    this.#handleEqualButton(resultField, calculationField)
+                })
 
-                    if (!Number(this.result) || this.reset) {
-                        this.result = value;
-                        this.reset = false;
-                    } else {
-                        this.result = this.result + value; //append string
-                        this.reset = false;
-                    }
+            } else if (button.classList.contains('btn-tool')) {
 
-                    result.textContent = this.result;
+            } else if (button.classList.contains('btn-changenum')) {
 
-                } else if (button.classList.contains('btn-operator')) {
-                    this.operandLeft = Number(this.result);
-                    this.operator = value;
-                    this.reset = true;
+            }
 
-                    calculations.textContent = `${this.operandLeft} ${this.operator}`;
-
-                } else if (button.classList.contains('btn-equal')) {
-                    if (this.result, this.operator, this.operandLeft !== undefined) {
-                        this.operandRight = Number(this.result);
-
-                        if (this.operator === '+') {
-                            this.operate(Operator.add);
-
-                        } else if (this.operator === '-') {
-                            this.operate(Operator.subtract);
-
-                        } else if (this.operator === 'x') {
-                            this.operate(Operator.multiply);
-
-                        } else if (this.operator === '/') {
-                            this.operate(Operator.divide);
-                        }
-
-                        calculations.textContent = `${this.operandLeft} ${this.operator} ${this.operandRight}`;
-                        result.textContent = this.result;
-                    }
-
-                } else if (button.classList.contains('btn-tool')) {
-
-                } else if (button.classList.contains('btn-changenum')) {
-
-                }
-            })
         })
     }
 
-    operate(func) {
-        this.result = String(func(this.operandLeft, this.operandRight));
+    #handleAssignNumber(value, resultField) {
+        if (!Number(this.result) || this.reset) {
+            this.result = value;
+            this.reset = false;
+        } else {
+            this.result = this.result + value; //append string
+            this.reset = false;
+        }
+
+        resultField.textContent = this.result;
     }
 
-    enableClickToAssignOperator() { }
-    enableEvaluate() { }
-    enableDeleteButton() { }
-    enableClearButton() { }
+    #handleAssignOperator(value, calculationField) {
+        this.operandLeft = Number(this.result);
+        this.operator = value;
+        this.reset = true;
+
+        calculationField.textContent = `${this.operandLeft} ${this.operator}`;
+    }
+
+    #handleEqualButton(resultField, calculationField) {
+        if (this.result, this.operator, this.operandLeft !== undefined) {
+            this.operandRight = Number(this.result);
+
+            if (this.operator === '+') {
+                this.#operate(Operator.add);
+            } else if (this.operator === '-') {
+                this.#operate(Operator.subtract);
+            } else if (this.operator === 'x') {
+                this.#operate(Operator.multiply);
+            } else if (this.operator === '/') {
+                this.#operate(Operator.divide);
+            }
+
+            calculationField.textContent = `${this.operandLeft} ${this.operator} ${this.operandRight}`;
+            resultField.textContent = this.result;
+        }
+    }
+
+    #operate(func) {
+        this.result = String(func(this.operandLeft, this.operandRight));
+    }
 }
 
 class Operator {
@@ -236,8 +241,8 @@ class Operator {
 }
 
 
-/** @type {any} */// @ts-ignore
-let calc = new DisplayCalculator(document.querySelector('.container'));
+let calc;
+calc = new DisplayCalculator(document.querySelector('.container'));
 
 calc.displayCalculatorScreen();
 calc.displayButton();
@@ -245,4 +250,4 @@ calc.displayButtonText();
 calc.displayCalculationText();
 
 calc = new Functionality(calc.container);
-calc.enableClickToAssignNumber();
+calc.enableClickToAssign();
