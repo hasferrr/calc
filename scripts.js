@@ -255,7 +255,7 @@ class Functionality extends Calculator {
             this.#evaluate(calculationField, resultField);
             this.typedNumber = String(this.result);
         }
-        this.operandLeft = this.operandLeft ? this.operandLeft : Number(this.typedNumber);
+        this.operandLeft = Number(this.typedNumber);
         this.operator = value;
         this.resetTyping = true;
         this.typedNumber = '';
@@ -275,6 +275,7 @@ class Functionality extends Calculator {
 
             this.operandLeft = Number(this.result);
             this.justClickOperate = false;
+            this.typedNumber = String(this.result);
         }
     }
 
