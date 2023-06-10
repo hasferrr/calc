@@ -6,6 +6,7 @@ class Calculator {
      */
     constructor(container) {
         this.container = container;
+
         this.resetTyping = false;
         this.justClickOperate = false;
 
@@ -204,7 +205,7 @@ class Functionality extends Calculator {
 
             } else if (button.classList.contains('btn-equal')) {
                 button.addEventListener('click', () => {
-                    this.#evaluate(calculationField, resultField);
+                    this.#handleEqualButton(calculationField, resultField);
                 })
 
             } else if (button.classList.contains('btn-ac')) {
@@ -252,7 +253,7 @@ class Functionality extends Calculator {
      */
     #handleOperator(value, calculationField, resultField) {
         if (this.justClickOperate) {
-            this.#evaluate(calculationField, resultField);
+            this.#handleEqualButton(calculationField, resultField);
             this.typedNumber = String(this.result);
         }
         this.operandLeft = Number(this.typedNumber);
@@ -262,12 +263,12 @@ class Functionality extends Calculator {
         this.justClickOperate = true;
     }
 
-    #evaluate(calculationField, resultField) {
+    #handleEqualButton(calculationField, resultField) {
         if (this.typedNumber !== '' && this.operator !== '' && this.operandLeft !== undefined) {
             this.operandRight = Number(this.typedNumber);
 
             //@ts-ignore
-            this.#handleEqualButton(this.operandLeft, this.operandRight);
+            this.#calculate(this.operandLeft, this.operandRight);
 
             DisplayCalculator.displayCalculation(this.operandLeft, this.operandRight,
                 this.operator, calculationField);
@@ -279,15 +280,15 @@ class Functionality extends Calculator {
         }
     }
 
-    #handleEqualButton(a, b) {
+    #calculate(a, b) {
         if (this.operator === '+') {
-            this.result = Operator.add(a, b);
+            this.result = a + b;
         } else if (this.operator === '-') {
-            this.result = Operator.subtract(a, b);
+            this.result = a - b;
         } else if (this.operator === 'x') {
-            this.result = Operator.multiply(a, b);
+            this.result = a * b;
         } else if (this.operator === '/') {
-            this.result = Operator.divide(a, b);
+            this.result = a / b;
         }
     }
 
@@ -314,24 +315,6 @@ class Functionality extends Calculator {
 
     #handleDot() {
         this.typedNumber = this.typedNumber + '.';
-    }
-}
-
-class Operator {
-    static add(a, b) {
-        return a + b
-    }
-
-    static subtract(a, b) {
-        return a - b
-    }
-
-    static multiply(a, b) {
-        return a * b
-    }
-
-    static divide(a, b) {
-        return a / b
     }
 }
 
