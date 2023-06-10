@@ -5,9 +5,13 @@ class Calculator {
      */
     constructor(container) {
         this.container = container;
-        this.operator = '';
-        this.typedNumber = '0';
         this.reset = false;
+
+        /** @type {string} */
+        this.operator = '';
+        /** @type {string} */
+        this.typedNumber = '';
+
         /** @type {number | undefined} */
         this.operandLeft = undefined;
         /** @type {number | undefined} */
@@ -143,6 +147,9 @@ class DisplayCalculator extends Calculator {
     }
 
     static displayNumber(text, resultField) {
+        if (text === '') {
+            text = '0';
+        }
         resultField.textContent = text;
     }
 
@@ -164,8 +171,12 @@ class Functionality extends Calculator {
 
     enableClickButton() {
         this.buttons.forEach(button => {
-            /** @type {string | undefined} */
-            let value = button.dataset.value;
+
+            /** @type {string} */
+            let value = '';
+            if (button.dataset.value !== undefined) {
+                value = button.dataset.value;
+            }
 
             let calculationField = this.container.querySelector('.calculations');
             let resultField = this.container.querySelector('.result');
@@ -179,6 +190,7 @@ class Functionality extends Calculator {
             } else if (button.classList.contains('btn-operator')) {
                 button.addEventListener('click', () => {
                     this.#handleOperator(value)
+                    DisplayCalculator.displayNumber(this.typedNumber, resultField);
                     DisplayCalculator.displayCalculation(this.operandLeft, '',
                         this.operator, calculationField);
                 })
@@ -224,6 +236,9 @@ class Functionality extends Calculator {
         })
     }
 
+    /**
+     * @param {string} value
+     */
     #handleAssignNumber(value) {
         if ((!Number(this.typedNumber) || this.reset) && this.typedNumber !== '0.') {
             this.typedNumber = value;
@@ -234,6 +249,9 @@ class Functionality extends Calculator {
         }
     }
 
+    /**
+     * @param {string} value
+     */
     #handleOperator(value) {
         this.operandLeft = this.operandLeft ? this.operandLeft : Number(this.typedNumber);
         this.operator = value;
@@ -260,11 +278,12 @@ class Functionality extends Calculator {
     }
 
     #handleAC() {
-        this.typedNumber = '0';
+        this.typedNumber = '';
+        this.operator = '';
         this.operandLeft = undefined;
         this.operandRight = undefined;
-        this.reset = false;
         this.result = undefined;
+        this.reset = false;
     }
 
     #handleDEL() {
