@@ -177,68 +177,13 @@ class Functionality extends Calculator {
         super(container);
         this.buttons = this.container.querySelectorAll('button');
     }
+}
 
-    enableClickButton() {
-        this.buttons.forEach(button => {
-
-            /** @type {string} */
-            let value = '';
-            if (button.dataset.value !== undefined) {
-                value = button.dataset.value;
-            }
-
-            let calculationField = this.container.querySelector('.calculations');
-            let resultField = this.container.querySelector('.result');
-
-            if (button.classList.contains('btn-num')) {
-                button.addEventListener('click', () => {
-                    this.#handleAssignNumber(value)
-                    DisplayCalculator.displayNumber(this.typedNumber, resultField);
-                })
-
-            } else if (button.classList.contains('btn-operator')) {
-                button.addEventListener('click', () => {
-                    this.#handleOperator(value, calculationField, resultField)
-                    DisplayCalculator.displayCalculation(this.operandLeft, '',
-                        this.operator, calculationField);
-                })
-
-            } else if (button.classList.contains('btn-equal')) {
-                button.addEventListener('click', () => {
-                    this.#handleEqualButton(calculationField, resultField);
-                })
-
-            } else if (button.classList.contains('btn-ac')) {
-                button.addEventListener('click', () => {
-                    this.#handleAC();
-                    DisplayCalculator.displayClear(calculationField, resultField);
-                })
-
-            } else if (button.classList.contains('btn-del')) {
-                button.addEventListener('click', () => {
-                    this.#handleDEL();
-                    DisplayCalculator.displayNumber(this.typedNumber, resultField);
-                })
-
-            } else if (button.classList.contains('btn-percentage')) {
-                button.addEventListener('click', () => {
-                    this.#handlePercentage();
-                    DisplayCalculator.displayNumber(this.typedNumber, resultField);
-                })
-
-            } else if (button.classList.contains('btn-dot')) {
-                button.addEventListener('click', () => {
-                    this.#handleDot();
-                    DisplayCalculator.displayNumber(this.typedNumber, resultField);
-                })
-            }
-        })
-    }
-
+class EventHandler extends Functionality {
     /**
      * @param {string} value
      */
-    #handleAssignNumber(value) {
+    _handleAssignNumber(value) {
         if ((!Number(this.typedNumber) || this.resetTyping) && this.typedNumber !== '0.') {
             this.typedNumber = value;
             this.resetTyping = false;
@@ -251,9 +196,9 @@ class Functionality extends Calculator {
     /**
      * @param {string} value
      */
-    #handleOperator(value, calculationField, resultField) {
+    _handleOperator(value, calculationField, resultField) {
         if (this.justClickOperate) {
-            this.#handleEqualButton(calculationField, resultField);
+            this._handleEqualButton(calculationField, resultField);
             this.typedNumber = String(this.result);
         }
         this.operandLeft = Number(this.typedNumber);
@@ -263,7 +208,7 @@ class Functionality extends Calculator {
         this.justClickOperate = true;
     }
 
-    #handleEqualButton(calculationField, resultField) {
+    _handleEqualButton(calculationField, resultField) {
         if (this.typedNumber !== '' && this.operator !== '' && this.operandLeft !== undefined) {
             this.operandRight = Number(this.typedNumber);
 
@@ -292,7 +237,7 @@ class Functionality extends Calculator {
         }
     }
 
-    #handleAC() {
+    _handleAC() {
         this.typedNumber = '';
         this.operator = '';
         this.operandLeft = undefined;
@@ -302,22 +247,84 @@ class Functionality extends Calculator {
         this.justClickOperate = false;
     }
 
-    #handleDEL() {
+    _handleDEL() {
         this.typedNumber = this.typedNumber.slice(0, -1);
         if (this.typedNumber === '') {
             this.typedNumber = '0';
         }
     }
 
-    #handlePercentage() {
+    _handlePercentage() {
         this.typedNumber = String(Number(this.typedNumber) / 100);
     }
 
-    #handleDot() {
+    _handleDot() {
         this.typedNumber = this.typedNumber + '.';
     }
 }
 
+class AbstractEventWrapper extends EventHandler { }
+
+class OnClickEvents extends AbstractEventWrapper {
+    enableClickButton() {
+        this.buttons.forEach(button => {
+
+            /** @type {string} */
+            let value = '';
+            if (button.dataset.value !== undefined) {
+                value = button.dataset.value;
+            }
+
+            let calculationField = this.container.querySelector('.calculations');
+            let resultField = this.container.querySelector('.result');
+
+            if (button.classList.contains('btn-num')) {
+                button.addEventListener('click', () => {
+                    this._handleAssignNumber(value)
+                    DisplayCalculator.displayNumber(this.typedNumber, resultField);
+                })
+
+            } else if (button.classList.contains('btn-operator')) {
+                button.addEventListener('click', () => {
+                    this._handleOperator(value, calculationField, resultField)
+                    DisplayCalculator.displayCalculation(this.operandLeft, '',
+                        this.operator, calculationField);
+                })
+
+            } else if (button.classList.contains('btn-equal')) {
+                button.addEventListener('click', () => {
+                    this._handleEqualButton(calculationField, resultField);
+                })
+
+            } else if (button.classList.contains('btn-ac')) {
+                button.addEventListener('click', () => {
+                    this._handleAC();
+                    DisplayCalculator.displayClear(calculationField, resultField);
+                })
+
+            } else if (button.classList.contains('btn-del')) {
+                button.addEventListener('click', () => {
+                    this._handleDEL();
+                    DisplayCalculator.displayNumber(this.typedNumber, resultField);
+                })
+
+            } else if (button.classList.contains('btn-percentage')) {
+                button.addEventListener('click', () => {
+                    this._handlePercentage();
+                    DisplayCalculator.displayNumber(this.typedNumber, resultField);
+                })
+
+            } else if (button.classList.contains('btn-dot')) {
+                button.addEventListener('click', () => {
+                    this._handleDot();
+                    DisplayCalculator.displayNumber(this.typedNumber, resultField);
+                })
+            }
+        })
+    }
+}
+
+class KeyboardEvents extends AbstractEventWrapper { }
 
 let calculator; //@ts-ignore
 calculator = new DisplayCalculator(document.querySelector('.container'));
@@ -326,5 +333,5 @@ calculator.displayButton();
 calculator.displayButtonText();
 calculator.displayCalculationText();
 
-calculator = new Functionality(calculator.container);
+calculator = new OnClickEvents(calculator.container);
 calculator.enableClickButton();
