@@ -11,12 +11,7 @@ class Calculator {
         this.operandRight = 0;
         this.reset = false;
     }
-}
 
-class DisplayCalculator extends Calculator {
-    static SCALE = 1.15;
-    static WIDTH = 290 * DisplayCalculator.SCALE;
-    static HEIGHT = 560 * DisplayCalculator.SCALE;
     static buttonClass = [
         ['btn-ac', 'AC'],
         ['btn-operator', '/'],
@@ -39,6 +34,12 @@ class DisplayCalculator extends Calculator {
         ['btn-changenum', '.'],
         ['btn-equal', '=']
     ];
+}
+
+class DisplayCalculator extends Calculator {
+    static SCALE = 1.15;
+    static WIDTH = 290 * DisplayCalculator.SCALE;
+    static HEIGHT = 560 * DisplayCalculator.SCALE;
 
     constructor(container) {
         super(container);
@@ -81,8 +82,8 @@ class DisplayCalculator extends Calculator {
         const buttons = this.container.querySelectorAll('button');
         for (let i = 0; i < buttons.length; i++) {
             let button = buttons[i];
-            button.classList.add(DisplayCalculator.buttonClass[i][0]);
-            button.dataset.value = DisplayCalculator.buttonClass[i][1];
+            button.classList.add(Calculator.buttonClass[i][0]);
+            button.dataset.value = Calculator.buttonClass[i][1];
         }
     }
 
@@ -98,7 +99,7 @@ class DisplayCalculator extends Calculator {
         const buttons = this.container.querySelectorAll('button');
         for (let i = 0; i < buttons.length; i++) {
             let button = buttons[i];
-            button.textContent = DisplayCalculator.buttonClass[i][1];
+            button.textContent = Calculator.buttonClass[i][1];
         }
     }
 
