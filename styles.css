@@ -2,6 +2,10 @@
     border: 0px solid red;
 }
 
+body {
+    background-color: #181a1b;
+}
+
 #main {
     display: flex;
     justify-content: center;

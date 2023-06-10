@@ -177,6 +177,22 @@ class Functionality extends Calculator {
         super(container);
         this.buttons = this.container.querySelectorAll('button');
     }
+
+    calculate(a, b) {
+        if (this.operator === '+') {
+            this.result = a + b;
+        } else if (this.operator === '-') {
+            this.result = a - b;
+        } else if (this.operator === 'x') {
+            this.result = a * b;
+        } else if (this.operator === '/') {
+            if (b === 0) {
+                this.result = undefined;
+                return;
+            }
+            this.result = a / b;
+        }
+    }
 }
 
 class EventHandler extends Functionality {
@@ -213,7 +229,13 @@ class EventHandler extends Functionality {
             this.operandRight = Number(this.typedNumber);
 
             //@ts-ignore
-            this.#calculate(this.operandLeft, this.operandRight);
+            this.calculate(this.operandLeft, this.operandRight);
+            if (this.result === undefined) {
+                DisplayCalculator.displayCalculation('', '', '', calculationField);
+                DisplayCalculator.displayNumber('Boom.', resultField);
+                this._handleAC();
+                return;
+            }
 
             DisplayCalculator.displayCalculation(this.operandLeft, this.operandRight,
                 this.operator, calculationField);
@@ -225,24 +247,12 @@ class EventHandler extends Functionality {
         }
     }
 
-    #calculate(a, b) {
-        if (this.operator === '+') {
-            this.result = a + b;
-        } else if (this.operator === '-') {
-            this.result = a - b;
-        } else if (this.operator === 'x') {
-            this.result = a * b;
-        } else if (this.operator === '/') {
-            this.result = a / b;
-        }
-    }
-
     _handleAC() {
         this.typedNumber = '';
         this.operator = '';
         this.operandLeft = undefined;
         this.operandRight = undefined;
-        this.result = undefined;
+        this.result = 0;
         this.resetTyping = false;
         this.justClickOperate = false;
     }
