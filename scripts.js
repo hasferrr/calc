@@ -9,9 +9,7 @@ class Calculator {
         /** @type {string | undefined} */
         this.operator = undefined;
 
-        /** @type {string | undefined}*/
-        this.result = undefined;
-
+        this.result = '0';
         this.operandLeft = 0;
         this.operandRight = 0;
         this.reset = false;
@@ -140,6 +138,24 @@ class DisplayCalculator extends Calculator {
         display?.appendChild(result);
         display?.appendChild(box.cloneNode(true));
     }
+
+    static displayNumber(text, resultField) {
+        resultField.textContent = text;
+    }
+
+    static displayClear(calculationField, resultField) {
+        calculationField.textContent = '';
+        resultField.textContent = '0';
+    }
+
+    static displayOperator(num, operator, calculationField) {
+        calculationField.textContent = `${num} ${operator}`;
+    }
+
+    static displayCalculationResult(a, b, operator, result, calculationField, resultField) {
+        calculationField.textContent = `${a} ${operator} ${b}`;
+        resultField.textContent = result;
+    }
 }
 
 class Functionality extends Calculator {
@@ -156,20 +172,30 @@ class Functionality extends Calculator {
 
             if (button.classList.contains('btn-num')) {
                 button.addEventListener('click', () => {
-                    this.#handleAssignNumber(value, resultField)
+                    this.#handleAssignNumber(value)
+                    DisplayCalculator.displayNumber(this.result, resultField);
                 })
 
             } else if (button.classList.contains('btn-operator')) {
                 button.addEventListener('click', () => {
-                    this.#handleAssignOperator(value, calculationField)
+                    this.#handleAssignOperator(value)
+                    DisplayCalculator.displayOperator(this.operandLeft,
+                        this.operator, calculationField);
                 })
 
             } else if (button.classList.contains('btn-equal')) {
                 button.addEventListener('click', () => {
-                    this.#handleEqualButton(resultField, calculationField)
+                    this.#handleEqualButton();
+                    DisplayCalculator.displayCalculationResult(this.operandLeft, this.operandRight,
+                        this.operator, this.result, calculationField, resultField);
+                    this.operandLeft = Number(this.result);
                 })
 
             } else if (button.classList.contains('btn-tool')) {
+                button.addEventListener('click', () => {
+                    this.#handleToolButton(value);
+                    DisplayCalculator.displayClear(calculationField, resultField);
+                })
 
             } else if (button.classList.contains('btn-changenum')) {
 
@@ -178,7 +204,7 @@ class Functionality extends Calculator {
         })
     }
 
-    #handleAssignNumber(value, resultField) {
+    #handleAssignNumber(value) {
         if (!Number(this.result) || this.reset) {
             this.result = value;
             this.reset = false;
@@ -186,43 +212,52 @@ class Functionality extends Calculator {
             this.result = this.result + value; //append string
             this.reset = false;
         }
-
-        resultField.textContent = this.result;
     }
 
-    #handleAssignOperator(value, calculationField) {
+    #handleAssignOperator(value) {
         this.operandLeft = Number(this.result);
         this.operator = value;
         this.reset = true;
-
-        calculationField.textContent = `${this.operandLeft} ${this.operator}`;
     }
 
-    #handleEqualButton(resultField, calculationField) {
+    #handleEqualButton() {
         if (this.result, this.operator, this.operandLeft !== undefined) {
             this.operandRight = Number(this.result);
 
             if (this.operator === '+') {
-                this.#operate(Operator.add);
+                this.result = Operator.operate(Operator.add, this.operandLeft, this.operandRight);
             } else if (this.operator === '-') {
-                this.#operate(Operator.subtract);
+                this.result = Operator.operate(Operator.subtract, this.operandLeft, this.operandRight);
             } else if (this.operator === 'x') {
-                this.#operate(Operator.multiply);
+                this.result = Operator.operate(Operator.multiply, this.operandLeft, this.operandRight);
             } else if (this.operator === '/') {
-                this.#operate(Operator.divide);
+                this.result = Operator.operate(Operator.divide, this.operandLeft, this.operandRight);
             }
-
-            calculationField.textContent = `${this.operandLeft} ${this.operator} ${this.operandRight}`;
-            resultField.textContent = this.result;
         }
     }
 
-    #operate(func) {
-        this.result = String(func(this.operandLeft, this.operandRight));
+    #handleToolButton(value) {
+        if (value === "AC") {
+            this.result = '0';
+            this.operandLeft = 0;
+            this.operandRight = 0;
+            this.reset = false;
+        } else {
+            // todo
+        }
     }
 }
 
 class Operator {
+    /**
+     * @param {(arg0: number, arg1: number) => number} f
+     * @param {number} a
+     * @param {number} b
+     */
+    static operate(f, a, b) {
+        return String(f(a, b));
+    }
+
     static add(a, b) {
         return a + b
     }
@@ -241,13 +276,13 @@ class Operator {
 }
 
 
-let calc;
-calc = new DisplayCalculator(document.querySelector('.container'));
+let calculator;
+calculator = new DisplayCalculator(document.querySelector('.container'));
 
-calc.displayCalculatorScreen();
-calc.displayButton();
-calc.displayButtonText();
-calc.displayCalculationText();
+calculator.displayCalculatorScreen();
+calculator.displayButton();
+calculator.displayButtonText();
+calculator.displayCalculationText();
 
-calc = new Functionality(calc.container);
-calc.enableClickToAssign();
+calculator = new Functionality(calculator.container);
+calculator.enableClickToAssign();
