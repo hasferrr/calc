@@ -6,7 +6,7 @@ class Calculator {
      */
     constructor(container) {
         this.container = container;
-        this.reset = false;
+        this.resetTyping = false;
 
         /** @type {string} */
         this.operator = '';
@@ -14,11 +14,11 @@ class Calculator {
         this.typedNumber = '';
 
         /** @type {number | undefined} */
-        this.operandLeft = undefined;
+        this.operandLeft;
         /** @type {number | undefined} */
-        this.operandRight = undefined;
+        this.operandRight;
         /** @type {number | undefined} */
-        this.result = undefined;
+        this.result;
     }
 
     static buttonClass = [
@@ -249,12 +249,12 @@ class Functionality extends Calculator {
      * @param {string} value
      */
     #handleAssignNumber(value) {
-        if ((!Number(this.typedNumber) || this.reset) && this.typedNumber !== '0.') {
+        if ((!Number(this.typedNumber) || this.resetTyping) && this.typedNumber !== '0.') {
             this.typedNumber = value;
-            this.reset = false;
+            this.resetTyping = false;
         } else {
             this.typedNumber = this.typedNumber + value; //append string
-            this.reset = false;
+            this.resetTyping = false;
         }
     }
 
@@ -264,7 +264,7 @@ class Functionality extends Calculator {
     #handleOperator(value) {
         this.operandLeft = this.operandLeft ? this.operandLeft : Number(this.typedNumber);
         this.operator = value;
-        this.reset = true;
+        this.resetTyping = true;
         this.typedNumber = '';
     }
 
@@ -296,7 +296,7 @@ class Functionality extends Calculator {
         this.operandLeft = undefined;
         this.operandRight = undefined;
         this.result = undefined;
-        this.reset = false;
+        this.resetTyping = false;
     }
 
     #handleDEL() {
