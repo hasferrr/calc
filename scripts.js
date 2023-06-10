@@ -259,7 +259,9 @@ class EventHandler extends Functionality {
     }
 
     _handleDot() {
-        this.typedNumber = this.typedNumber + '.';
+        if (!this.typedNumber.includes('.')) {
+            this.typedNumber = this.typedNumber + '.';
+        }
     }
 }
 
