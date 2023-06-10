@@ -6,12 +6,14 @@ class Calculator {
     constructor(container) {
         this.container = container;
         this.operator = '';
-        this.result = '0';
+        this.typedNumber = '0';
         this.reset = false;
         /** @type {number | undefined} */
         this.operandLeft = undefined;
         /** @type {number | undefined} */
         this.operandRight = undefined;
+        /** @type {number | undefined} */
+        this.result = undefined;
     }
 
     static buttonClass = [
@@ -169,7 +171,7 @@ class Functionality extends Calculator {
             if (button.classList.contains('btn-num')) {
                 button.addEventListener('click', () => {
                     this.#handleAssignNumber(value)
-                    DisplayCalculator.displayNumber(this.result, resultField);
+                    DisplayCalculator.displayNumber(this.typedNumber, resultField);
                 })
 
             } else if (button.classList.contains('btn-operator')) {
@@ -182,12 +184,12 @@ class Functionality extends Calculator {
             } else if (button.classList.contains('btn-equal')) {
                 button.addEventListener('click', () => {
                     if (this.#checkEqualButton()) {
-                        this.operandRight = Number(this.result);
+                        this.operandRight = Number(this.typedNumber);
                         this.#handleEqualButton(this.operandLeft, this.operandRight);
                         DisplayCalculator.displayCalculation(this.operandLeft, this.operandRight,
                             this.operator, calculationField);
-                        DisplayCalculator.displayNumber(this.result, resultField);
-                        this.operandLeft = Number(this.result);
+                        DisplayCalculator.displayNumber(this.typedNumber, resultField);
+                        this.operandLeft = Number(this.typedNumber);
                     }
                 })
 
@@ -200,77 +202,77 @@ class Functionality extends Calculator {
             } else if (button.classList.contains('btn-del')) {
                 button.addEventListener('click', () => {
                     this.#handleDEL();
-                    if (this.result === '') {
+                    if (this.typedNumber === '') {
                         DisplayCalculator.displayNumber('0', resultField);
                     } else {
-                        DisplayCalculator.displayNumber(this.result, resultField);
+                        DisplayCalculator.displayNumber(this.typedNumber, resultField);
                     }
                 })
 
             } else if (button.classList.contains('btn-percentage')) {
                 button.addEventListener('click', () => {
                     this.#handlePercentage();
-                    DisplayCalculator.displayNumber(this.result, resultField);
+                    DisplayCalculator.displayNumber(this.typedNumber, resultField);
                 })
 
             } else if (button.classList.contains('btn-dot')) {
                 button.addEventListener('click', () => {
                     this.#handleDot();
-                    DisplayCalculator.displayNumber(this.result, resultField);
+                    DisplayCalculator.displayNumber(this.typedNumber, resultField);
                 })
             }
         })
     }
 
     #handleAssignNumber(value) {
-        if ((!Number(this.result) || this.reset) && this.result !== '0.') {
-            this.result = value;
+        if ((!Number(this.typedNumber) || this.reset) && this.typedNumber !== '0.') {
+            this.typedNumber = value;
             this.reset = false;
         } else {
-            this.result = this.result + value; //append string
+            this.typedNumber = this.typedNumber + value; //append string
             this.reset = false;
         }
     }
 
     #handleOperator(value) {
-        this.operandLeft = Number(this.result);
+        this.operandLeft = Number(this.typedNumber);
         this.operator = value;
         this.reset = true;
     }
 
     #checkEqualButton() {
-        return this.result !== '' && this.operator !== '' && this.operandLeft !== undefined
+        return this.typedNumber !== '' && this.operator !== '' && this.operandLeft !== undefined
     }
 
     #handleEqualButton(a, b) {
         if (this.operator === '+') {
-            this.result = String(Operator.add(a, b));
+            this.typedNumber = String(Operator.add(a, b));
         } else if (this.operator === '-') {
-            this.result = String(Operator.subtract(a, b));
+            this.typedNumber = String(Operator.subtract(a, b));
         } else if (this.operator === 'x') {
-            this.result = String(Operator.multiply(a, b));
+            this.typedNumber = String(Operator.multiply(a, b));
         } else if (this.operator === '/') {
-            this.result = String(Operator.divide(a, b));
+            this.typedNumber = String(Operator.divide(a, b));
         }
     }
 
     #handleAC() {
-        this.result = '0';
+        this.typedNumber = '0';
         this.operandLeft = undefined;
         this.operandRight = undefined;
         this.reset = false;
     }
 
     #handleDEL() {
-        this.result = this.result.slice(0, -1);
+        this.typedNumber = this.typedNumber.slice(0, -1);
     }
 
     #handlePercentage() {
-        this.result = String(Number(this.result) / 100);
+        this.typedNumber = String(Number(this.typedNumber) / 100);
     }
 
     #handleDot() {
-        this.result = this.result + '.';
+        this.typedNumber = this.typedNumber + '.';
     }
 }
 
