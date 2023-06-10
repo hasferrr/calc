@@ -156,7 +156,7 @@ class Functionality extends Calculator {
         this.buttons = this.container.querySelectorAll('button');
     }
 
-    enableClickToAssign() {
+    enableClickButton() {
         this.buttons.forEach(button => {
             let value = button.dataset.value;
             let calculationField = this.container.querySelector('.calculations');
@@ -170,7 +170,7 @@ class Functionality extends Calculator {
 
             } else if (button.classList.contains('btn-operator')) {
                 button.addEventListener('click', () => {
-                    this.#handleAssignOperator(value)
+                    this.#handleOperator(value)
                     DisplayCalculator.displayCalculation(this.operandLeft, '',
                         this.operator, calculationField);
                 })
@@ -212,7 +212,7 @@ class Functionality extends Calculator {
         }
     }
 
-    #handleAssignOperator(value) {
+    #handleOperator(value) {
         this.operandLeft = Number(this.result);
         this.operator = value;
         this.reset = true;
@@ -267,11 +267,10 @@ class Operator {
 
 let calculator;
 calculator = new DisplayCalculator(document.querySelector('.container'));
-
 calculator.displayCalculatorScreen();
 calculator.displayButton();
 calculator.displayButtonText();
 calculator.displayCalculationText();
 
 calculator = new Functionality(calculator.container);
-calculator.enableClickToAssign();
+calculator.enableClickButton();
