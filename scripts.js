@@ -211,24 +211,18 @@ class EventHandler extends Functionality {
 
     /**
      * @param {string} value
-     * @param {number | undefined} operandRight
      */
-    _handleOperator(value, calculationField, resultField, operandRight = undefined) {
+    _handleOperator(value, calculationField, resultField) {
         if (this.justClickOperate) {
             /**
-             * sometimes user want to calculate without
+             * sometimes user want to calculate without clicking '=' button
+             * and directly press another operator button
+             * in that case, we will calculate first before into the new operator state
              */
             this._handleEqualButton(calculationField, resultField);
-            this.typedNumber = String(this.result);
         }
-        /**
-         * copy typedNumber to operandLeft
-         * remove operandRight if any
-         * add + - x / to operator
-         * remove typedNumber
-         */
+
         this.operandLeft = Number(this.typedNumber);
-        this.operandRight = operandRight;
         this.operator = value;
         this.resetTyping = true;
         this.typedNumber = '';
@@ -236,19 +230,31 @@ class EventHandler extends Functionality {
     }
 
     _handleEqualButton(calculationField, resultField) {
-        if (this.typedNumber !== ''
-            && this.operator !== ''
-            && this.operandLeft !== undefined
-            && this.operandRight === undefined) {
-            /**
-             * copy typedNumber to operandRignt
-             * calculate operator(operandLeft, operandRight)
-             * store the result into result
-             */
-            this.operandRight = Number(this.typedNumber);
+        if (this.typedNumber !== '' && this.operator !== '' && this.operandLeft !== undefined) {
 
-            //@ts-ignore
+            if (this.operandRight === undefined) {
+                /**
+                 * copy typedNumber to operandRight
+                 */
+                this.operandRight = Number(this.typedNumber);
+
+            } else if (this.operandRight !== undefined) {
+                /**
+                 * this case is used when user click '=' for the second or more times
+                 * it will calculate the previous result to the previous operandRight
+                 *
+                 * take the previous result (which is typeNumber)
+                 * copy it to operandLeft
+                 */
+                this.operandLeft = Number(this.typedNumber);
+            }
+            /**
+             * calculate operator(this.operandLeft, this.operandRight)
+             * store the result into this.result
+             * copy this.result to this.typedNumber
+             */
             this.calculate(this.operandLeft, this.operandRight);
+
             if (this.result === undefined) {
                 DisplayCalculator.displayCalculation('', '', '', calculationField);
                 DisplayCalculator.displayNumber('Boom.', resultField);
@@ -260,26 +266,8 @@ class EventHandler extends Functionality {
                 this.operator, calculationField);
             DisplayCalculator.displayNumber(this.result, resultField);
 
-            //this.operandLeft = Number(this.result);
             this.justClickOperate = false;
             this.typedNumber = String(this.result);
-
-        } else if (this.typedNumber !== ''
-            && this.operator !== ''
-            && this.operandLeft !== undefined
-            && this.operandRight !== undefined) {
-            /**
-             * backup this.operandRight into previousOperandRight
-             * it will reused again because user click '=' more than once
-             * and it will calculate again using the same operator
-             * and the same this.operandRight
-             * and the result of the previous calculation (which is this.typedNumber)
-             * with the previous this.operandRight
-             */
-            let perviousOperandRight = this.operandRight;
-            this._handleOperator(this.operator, calculationField, resultField);
-            this.typedNumber = String(perviousOperandRight);
-            this._handleEqualButton(calculationField, resultField);
         }
     }
 
