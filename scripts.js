@@ -7,9 +7,11 @@ class Calculator {
         this.container = container;
         this.operator = '';
         this.result = '0';
-        this.operandLeft = 0;
-        this.operandRight = 0;
         this.reset = false;
+        /** @type {number | undefined} */
+        this.operandLeft = undefined;
+        /** @type {number | undefined} */
+        this.operandRight = undefined;
     }
 
     static buttonClass = [
@@ -179,11 +181,13 @@ class Functionality extends Calculator {
 
             } else if (button.classList.contains('btn-equal')) {
                 button.addEventListener('click', () => {
-                    this.#handleEqualButton();
-                    DisplayCalculator.displayCalculation(this.operandLeft, this.operandRight,
-                        this.operator, calculationField);
-                    DisplayCalculator.displayNumber(this.result, resultField);
-                    this.operandLeft = Number(this.result);
+                    if (this.#checkEqualButton()) {
+                        this.#handleEqualButton(this.operandLeft, this.operandRight);
+                        DisplayCalculator.displayCalculation(this.operandLeft, this.operandRight,
+                            this.operator, calculationField);
+                        DisplayCalculator.displayNumber(this.result, resultField);
+                        this.operandLeft = Number(this.result);
+                    }
                 })
 
             } else if (button.classList.contains('btn-ac')) {
@@ -195,7 +199,11 @@ class Functionality extends Calculator {
             } else if (button.classList.contains('btn-del')) {
                 button.addEventListener('click', () => {
                     this.#handleDEL();
-                    DisplayCalculator.displayNumber(this.result, resultField);
+                    if (this.result === '') {
+                        DisplayCalculator.displayNumber('0', resultField);
+                    } else {
+                        DisplayCalculator.displayNumber(this.result, resultField);
+                    }
                 })
 
             } else if (button.classList.contains('btn-percentage')) {
@@ -214,7 +222,7 @@ class Functionality extends Calculator {
     }
 
     #handleAssignNumber(value) {
-        if (!Number(this.result) || this.reset) {
+        if ((!Number(this.result) || this.reset) && this.result !== '0.') {
             this.result = value;
             this.reset = false;
         } else {
@@ -224,39 +232,44 @@ class Functionality extends Calculator {
     }
 
     #handleOperator(value) {
-        this.operandLeft = Number(this.result);
-        this.operator = value;
-        this.reset = true;
+        if (true) { //this.operandLeft === 0
+            this.operandLeft = Number(this.result);
+            this.operator = value;
+            this.reset = true;
+        } else { // TODO !!! // BUG
+            this.#handleEqualButton(this.operandLeft, Number(this.result))
+        }
     }
 
-    #handleEqualButton() {
-        if (this.result, this.operator, this.operandLeft !== undefined) {
+    #checkEqualButton() {
+        if (this.result !== '' && this.operator !== '' && this.operandLeft !== undefined) {
             this.operandRight = Number(this.result);
+            return true;
+        }
+        return false;
+    }
 
-            if (this.operator === '+') {
-                this.result = String(Operator.add(this.operandLeft, this.operandRight));
-            } else if (this.operator === '-') {
-                this.result = String(Operator.subtract(this.operandLeft, this.operandRight));
-            } else if (this.operator === 'x') {
-                this.result = String(Operator.multiply(this.operandLeft, this.operandRight));
-            } else if (this.operator === '/') {
-                this.result = String(Operator.divide(this.operandLeft, this.operandRight));
-            }
+    #handleEqualButton(a, b) {
+        if (this.operator === '+') {
+            this.result = String(Operator.add(a, b));
+        } else if (this.operator === '-') {
+            this.result = String(Operator.subtract(a, b));
+        } else if (this.operator === 'x') {
+            this.result = String(Operator.multiply(a, b));
+        } else if (this.operator === '/') {
+            this.result = String(Operator.divide(a, b));
         }
     }
 
     #handleAC() {
         this.result = '0';
-        this.operandLeft = 0;
-        this.operandRight = 0;
+        this.operandLeft = undefined;
+        this.operandRight = undefined;
         this.reset = false;
     }
 
     #handleDEL() {
         this.result = this.result.slice(0, -1);
-        if (this.result === '') {
-            this.result = '0';
-        }
     }
 
     #handlePercentage() {
