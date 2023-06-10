@@ -164,7 +164,9 @@ class Functionality extends Calculator {
 
     enableClickButton() {
         this.buttons.forEach(button => {
+            /** @type {string | undefined} */
             let value = button.dataset.value;
+
             let calculationField = this.container.querySelector('.calculations');
             let resultField = this.container.querySelector('.result');
 
@@ -186,10 +188,12 @@ class Functionality extends Calculator {
                     if (this.#checkEqualButton()) {
                         this.operandRight = Number(this.typedNumber);
                         this.#handleEqualButton(this.operandLeft, this.operandRight);
+
                         DisplayCalculator.displayCalculation(this.operandLeft, this.operandRight,
                             this.operator, calculationField);
-                        DisplayCalculator.displayNumber(this.typedNumber, resultField);
-                        this.operandLeft = Number(this.typedNumber);
+                        DisplayCalculator.displayNumber(this.result, resultField);
+
+                        this.operandLeft = Number(this.result);
                     }
                 })
 
@@ -202,11 +206,7 @@ class Functionality extends Calculator {
             } else if (button.classList.contains('btn-del')) {
                 button.addEventListener('click', () => {
                     this.#handleDEL();
-                    if (this.typedNumber === '') {
-                        DisplayCalculator.displayNumber('0', resultField);
-                    } else {
-                        DisplayCalculator.displayNumber(this.typedNumber, resultField);
-                    }
+                    DisplayCalculator.displayNumber(this.typedNumber, resultField);
                 })
 
             } else if (button.classList.contains('btn-percentage')) {
@@ -237,22 +237,25 @@ class Functionality extends Calculator {
     #handleOperator(value) {
         this.operandLeft = Number(this.typedNumber);
         this.operator = value;
-        this.reset = true;
+        this.reset = true; //!!!
+        this.typedNumber = ''
     }
 
     #checkEqualButton() {
-        return this.typedNumber !== '' && this.operator !== '' && this.operandLeft !== undefined
+        return this.typedNumber !== ''
+            && this.operator !== ''
+            && this.operandLeft !== undefined
     }
 
     #handleEqualButton(a, b) {
         if (this.operator === '+') {
-            this.typedNumber = String(Operator.add(a, b));
+            this.result = Operator.add(a, b);
         } else if (this.operator === '-') {
-            this.typedNumber = String(Operator.subtract(a, b));
+            this.result = Operator.subtract(a, b);
         } else if (this.operator === 'x') {
-            this.typedNumber = String(Operator.multiply(a, b));
+            this.result = Operator.multiply(a, b);
         } else if (this.operator === '/') {
-            this.typedNumber = String(Operator.divide(a, b));
+            this.result = Operator.divide(a, b);
         }
     }
 
@@ -265,6 +268,9 @@ class Functionality extends Calculator {
 
     #handleDEL() {
         this.typedNumber = this.typedNumber.slice(0, -1);
+        if (this.typedNumber === '') {
+            this.typedNumber = '0';
+        }
     }
 
     #handlePercentage() {
