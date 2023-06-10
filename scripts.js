@@ -7,6 +7,7 @@ class Calculator {
     constructor(container) {
         this.container = container;
         this.resetTyping = false;
+        this.justClickOperate = false;
 
         /** @type {string} */
         this.operator = '';
@@ -196,26 +197,14 @@ class Functionality extends Calculator {
 
             } else if (button.classList.contains('btn-operator')) {
                 button.addEventListener('click', () => {
-                    this.#handleOperator(value)
-                    DisplayCalculator.displayNumber(this.typedNumber, resultField);
+                    this.#handleOperator(value, calculationField, resultField)
                     DisplayCalculator.displayCalculation(this.operandLeft, '',
                         this.operator, calculationField);
                 })
 
             } else if (button.classList.contains('btn-equal')) {
                 button.addEventListener('click', () => {
-                    if (this.#checkEqualButton()) {
-                        this.operandRight = Number(this.typedNumber);
-
-                        //@ts-ignore
-                        this.#handleEqualButton(this.operandLeft, this.operandRight);
-
-                        DisplayCalculator.displayCalculation(this.operandLeft, this.operandRight,
-                            this.operator, calculationField);
-                        DisplayCalculator.displayNumber(this.result, resultField);
-
-                        this.operandLeft = Number(this.result);
-                    }
+                    this.#evaluate(calculationField, resultField);
                 })
 
             } else if (button.classList.contains('btn-ac')) {
@@ -261,23 +250,34 @@ class Functionality extends Calculator {
     /**
      * @param {string} value
      */
-    #handleOperator(value) {
+    #handleOperator(value, calculationField, resultField) {
+        if (this.justClickOperate) {
+            this.#evaluate(calculationField, resultField);
+            this.typedNumber = String(this.result);
+        }
         this.operandLeft = this.operandLeft ? this.operandLeft : Number(this.typedNumber);
         this.operator = value;
         this.resetTyping = true;
         this.typedNumber = '';
+        this.justClickOperate = true;
     }
 
-    #checkEqualButton() {
-        return this.typedNumber !== ''
-            && this.operator !== ''
-            && this.operandLeft !== undefined
+    #evaluate(calculationField, resultField) {
+        if (this.typedNumber !== '' && this.operator !== '' && this.operandLeft !== undefined) {
+            this.operandRight = Number(this.typedNumber);
+
+            //@ts-ignore
+            this.#handleEqualButton(this.operandLeft, this.operandRight);
+
+            DisplayCalculator.displayCalculation(this.operandLeft, this.operandRight,
+                this.operator, calculationField);
+            DisplayCalculator.displayNumber(this.result, resultField);
+
+            this.operandLeft = Number(this.result);
+            this.justClickOperate = false;
+        }
     }
 
-    /**
-     * @param {number} a
-     * @param {number} b
-     */
     #handleEqualButton(a, b) {
         if (this.operator === '+') {
             this.result = Operator.add(a, b);
@@ -297,6 +297,7 @@ class Functionality extends Calculator {
         this.operandRight = undefined;
         this.result = undefined;
         this.resetTyping = false;
+        this.justClickOperate = false;
     }
 
     #handleDEL() {
@@ -316,34 +317,18 @@ class Functionality extends Calculator {
 }
 
 class Operator {
-    /**
-     * @param {number} a
-     * @param {number} b
-     */
     static add(a, b) {
         return a + b
     }
 
-    /**
-     * @param {number} a
-     * @param {number} b
-     */
     static subtract(a, b) {
         return a - b
     }
 
-    /**
-     * @param {number} a
-     * @param {number} b
-     */
     static multiply(a, b) {
         return a * b
     }
 
-    /**
-     * @param {number} a
-     * @param {number} b
-     */
     static divide(a, b) {
         return a / b
     }
