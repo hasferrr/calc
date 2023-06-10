@@ -20,7 +20,7 @@ class Calculator {
         ['btn-num', '7'],
         ['btn-num', '8'],
         ['btn-num', '9'],
-        ['btn-changenum', '%'],
+        ['btn-percentage', '%'],
         ['btn-num', '4'],
         ['btn-num', '5'],
         ['btn-num', '6'],
@@ -31,7 +31,7 @@ class Calculator {
         ['btn-operator', '+'],
         ['btn-empty', ''],
         ['btn-num', '0'],
-        ['btn-changenum', '.'],
+        ['btn-dot', '.'],
         ['btn-equal', '=']
     ];
 }
@@ -115,6 +115,7 @@ class DisplayCalculator extends Calculator {
         calculations.classList.add('calculations');
         result.classList.add('result');
 
+        // Styling: height, width, font-size
         let height = 80;
         let width = DisplayCalculator.WIDTH / DisplayCalculator.SCALE - 30;
 
@@ -197,8 +198,17 @@ class Functionality extends Calculator {
                     DisplayCalculator.displayNumber(this.result, resultField);
                 })
 
-            } else if (button.classList.contains('btn-changenum')) {
-                // todo
+            } else if (button.classList.contains('btn-percentage')) {
+                button.addEventListener('click', () => {
+                    this.#handlePercentage();
+                    DisplayCalculator.displayNumber(this.result, resultField);
+                })
+
+            } else if (button.classList.contains('btn-dot')) {
+                button.addEventListener('click', () => {
+                    this.#handleDot();
+                    DisplayCalculator.displayNumber(this.result, resultField);
+                })
             }
         })
     }
@@ -247,6 +257,14 @@ class Functionality extends Calculator {
         if (this.result === '') {
             this.result = '0';
         }
+    }
+
+    #handlePercentage() {
+        this.result = String(Number(this.result) / 100);
+    }
+
+    #handleDot() {
+        this.result = this.result + '.';
     }
 }
 
