@@ -154,6 +154,13 @@ class DisplayCalculator extends Calculator {
         if (text === '') {
             text = '0';
         }
+        if (resultField.textContent.length > 15) {
+            resultField.style.fontSize = DisplayCalculator.RESULT_FONT_SIZE * 0.5 + 'px'
+        } else if (resultField.textContent.length > 9) {
+            resultField.style.fontSize = DisplayCalculator.RESULT_FONT_SIZE * 0.7 + 'px'
+        } else {
+            resultField.style.fontSize = DisplayCalculator.RESULT_FONT_SIZE + 'px'
+        }
         resultField.textContent = text;
     }
 
@@ -162,31 +169,9 @@ class DisplayCalculator extends Calculator {
     }
 
     static displayClear(calculationField, resultField) {
+        resultField.style.fontSize = DisplayCalculator.RESULT_FONT_SIZE + 'px'
         calculationField.textContent = '';
         resultField.textContent = '0';
-    }
-
-    enableDynamicFontSize() {
-        /**
-         * @type {HTMLElement} result
-         */
-        //@ts-ignore
-        const result = document.querySelector('.result');
-        const buttons = document.querySelectorAll('button');
-
-        buttons.forEach(button => {
-            button.addEventListener('click', () => {
-                if (result.textContent === null) {
-                    // pass
-                } else if (result.textContent.length > 15) {
-                    result.style.fontSize = DisplayCalculator.RESULT_FONT_SIZE * 0.5 + 'px'
-                } else if (result.textContent.length > 9) {
-                    result.style.fontSize = DisplayCalculator.RESULT_FONT_SIZE * 0.7 + 'px'
-                } else {
-                    result.style.fontSize = DisplayCalculator.RESULT_FONT_SIZE + 'px'
-                }
-            })
-        })
     }
 }
 
@@ -208,8 +193,13 @@ class Functionality extends Calculator {
     calculate(a, b) {
         if (this.operator === '+') this.result = a + b
         else if (this.operator === '-') this.result = a - b
-        else if (this.operator === 'x') this.result = a * b
-        else if (this.operator === '/') this.result = a / b
+        else if (this.operator === 'x' || this.operator === '*') this.result = a * b
+        else if (this.operator === '/') {
+            if (b === 0) {
+                this.result = undefined;
+            }
+            this.result = a / b
+        }
     }
 }
 
@@ -391,6 +381,7 @@ class EventListener extends EventHandler {
             else if (keydown.key === '+'
                 || keydown.key === '-'
                 || keydown.key === '*'
+                || keydown.key === 'x'
                 || keydown.key === '/') {
                 this._handleOperator(keydown.key)
             }
@@ -404,7 +395,6 @@ calculator.displayCalculatorScreen();
 calculator.displayButton();
 calculator.displayButtonText();
 calculator.displayCalculationText();
-calculator.enableDynamicFontSize();
 
 calculator = new EventListener(calculator.container);
 calculator.enableClickButton();
