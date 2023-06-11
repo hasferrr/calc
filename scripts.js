@@ -177,6 +177,10 @@ class Functionality extends Calculator {
         this.justClickOperate = false;
     }
 
+    /**
+     * @param {number} a
+     * @param {number} b
+     */
     calculate(a, b) {
         if (this.operator === '+') {
             this.result = a + b;
@@ -185,10 +189,6 @@ class Functionality extends Calculator {
         } else if (this.operator === 'x') {
             this.result = a * b;
         } else if (this.operator === '/') {
-            if (b === 0) {
-                this.result = undefined;
-                return;
-            }
             this.result = a / b;
         }
     }
@@ -212,14 +212,35 @@ class EventHandler extends Functionality {
      * @param {string} value
      */
     _handleOperator(value, calculationField, resultField) {
-        this.operator = value;
-        if (!this.justClickOperate) {
-            this.operandLeft = Number(this.typedNumber);
+        if (this.operandLeft !== undefined && this.typedNumber !== '' && this.justClickOperate) {
+            /**
+             * Sometimes user want to calculate without clicking '=' button
+             * and directly press another operator button.
+             * In that case, we will calculate first before jump into the new operator state
+             */
+            this.calculate(Number(this.operandLeft), Number(this.typedNumber))
+            if (this.isInfinity(calculationField, resultField)) {
+                return;
+            }
+            this.operator = value;
+            this.operandLeft = this.result;
             this.operandRight = undefined;
             this.resetTyping = true;
             this.typedNumber = '';
-            this.justClickOperate = true;
+            this.result = 0;
+        } else {
+            this.operator = value;
+            if (!this.justClickOperate) {
+                this.operandLeft = Number(this.typedNumber);
+                this.operandRight = undefined;
+                this.resetTyping = true;
+                this.typedNumber = '';
+                this.justClickOperate = true;
+            }
         }
+        DisplayCalculator.displayNumber(this.typedNumber, resultField);
+        DisplayCalculator.displayCalculation(this.operandLeft, '',
+            this.operator, calculationField);
     }
 
     _handleEqualButton(calculationField, resultField) {
@@ -247,11 +268,7 @@ class EventHandler extends Functionality {
              * copy this.result to this.typedNumber
              */
             this.calculate(this.operandLeft, this.operandRight);
-
-            if (this.result === undefined) {
-                DisplayCalculator.displayCalculation('', '', '', calculationField);
-                DisplayCalculator.displayNumber('Boom.', resultField);
-                this._handleAC();
+            if (this.isInfinity(calculationField, resultField)) {
                 return;
             }
 
@@ -263,6 +280,17 @@ class EventHandler extends Functionality {
 
             this.justClickOperate = false;
         }
+    }
+
+    isInfinity(calculationField, resultField) {
+        // Any Infinity value (including Zero Division)
+        if (this.result === Infinity) {
+            DisplayCalculator.displayCalculation('', '', '', calculationField);
+            DisplayCalculator.displayNumber('Boom.', resultField);
+            this._handleAC();
+            return 1;
+        }
+        return 0;
     }
 
     _handleAC() {
@@ -316,10 +344,7 @@ class OnClickEvents extends AbstractEventWrapper {
 
             } else if (button.classList.contains('btn-operator')) {
                 button.addEventListener('click', () => {
-                    this._handleOperator(value, calculationField, resultField)
-                    DisplayCalculator.displayNumber(this.typedNumber, resultField);
-                    DisplayCalculator.displayCalculation(this.operandLeft, '',
-                        this.operator, calculationField);
+                    this._handleOperator(value, calculationField, resultField);
                 })
 
             } else if (button.classList.contains('btn-equal')) {
