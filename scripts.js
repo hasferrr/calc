@@ -219,10 +219,15 @@ class Functionality extends Calculator {
 }
 
 class EventHandler extends Functionality {
+    constructor(container) {
+        super(container)
+        this.calculationField = this.container.querySelector('.calculations');
+        this.resultField = this.container.querySelector('.result');
+    }
     /**
      * @param {string} value
      */
-    _handleAssignNumber(value, resultField) {
+    _handleAssignNumber(value) {
         if ((!Number(this.typedNumber) || this.resetTyping) && this.typedNumber !== '0.') {
             this.typedNumber = value;
             this.resetTyping = false;
@@ -230,13 +235,13 @@ class EventHandler extends Functionality {
             this.typedNumber = this.typedNumber + value; //append string
             this.resetTyping = false;
         }
-        DisplayCalculator.displayNumber(this.typedNumber, resultField);
+        DisplayCalculator.displayNumber(this.typedNumber, this.resultField);
     }
 
     /**
      * @param {string} value
      */
-    _handleOperator(value, calculationField, resultField) {
+    _handleOperator(value) {
         if (this.operandLeft !== undefined && this.typedNumber !== '' && this.justClickOperate) {
             /**
              * Sometimes user want to calculate without clicking '=' button
@@ -244,7 +249,7 @@ class EventHandler extends Functionality {
              * In that case, we will calculate first before jump into the new operator state
              */
             this.calculate(Number(this.operandLeft), Number(this.typedNumber))
-            if (this.isInfinity(calculationField, resultField)) {
+            if (this.isInfinity()) {
                 return;
             }
             this.operator = value;
@@ -263,12 +268,12 @@ class EventHandler extends Functionality {
                 this.justClickOperate = true;
             }
         }
-        DisplayCalculator.displayNumber(this.typedNumber, resultField);
+        DisplayCalculator.displayNumber(this.typedNumber, this.resultField);
         DisplayCalculator.displayCalculation(this.operandLeft, '',
-            this.operator, calculationField);
+            this.operator, this.calculationField);
     }
 
-    _handleEqualButton(calculationField, resultField) {
+    _handleEqualButton() {
         if (this.typedNumber !== '' && this.operator !== '' && this.operandLeft !== undefined) {
 
             if (this.operandRight === undefined) {
@@ -293,13 +298,13 @@ class EventHandler extends Functionality {
              * copy this.result to this.typedNumber
              */
             this.calculate(this.operandLeft, this.operandRight);
-            if (this.isInfinity(calculationField, resultField)) {
+            if (this.isInfinity()) {
                 return;
             }
 
             DisplayCalculator.displayCalculation(this.operandLeft, this.operandRight,
-                this.operator, calculationField);
-            DisplayCalculator.displayNumber(this.result, resultField);
+                this.operator, this.calculationField);
+            DisplayCalculator.displayNumber(this.result, this.resultField);
 
             this.typedNumber = String(this.result);
 
@@ -307,18 +312,18 @@ class EventHandler extends Functionality {
         }
     }
 
-    isInfinity(calculationField, resultField) {
+    isInfinity() {
         // Any Infinity value (including Zero Division)
         if (this.result === Infinity) {
-            this._handleAC(calculationField, resultField);
-            DisplayCalculator.displayCalculation('', '', '', calculationField);
-            DisplayCalculator.displayNumber('Boom.', resultField);
+            this._handleAC(this.calculationField, this.resultField);
+            DisplayCalculator.displayCalculation('', '', '', this.calculationField);
+            DisplayCalculator.displayNumber('Boom.', this.resultField);
             return 1;
         }
         return 0;
     }
 
-    _handleAC(calculationField, resultField) {
+    _handleAC() {
         this.typedNumber = '';
         this.operator = '';
         this.operandLeft = undefined;
@@ -326,37 +331,31 @@ class EventHandler extends Functionality {
         this.result = 0;
         this.resetTyping = false;
         this.justClickOperate = false;
-        DisplayCalculator.displayClear(calculationField, resultField);
+        DisplayCalculator.displayClear(this.calculationField, this.resultField);
     }
 
-    _handleDEL(resultField) {
+    _handleDEL() {
         this.typedNumber = this.typedNumber.slice(0, -1);
         if (this.typedNumber === '') {
             this.typedNumber = '0';
         }
-        DisplayCalculator.displayNumber(this.typedNumber, resultField);
+        DisplayCalculator.displayNumber(this.typedNumber, this.resultField);
     }
 
-    _handlePercentage(resultField) {
+    _handlePercentage() {
         this.typedNumber = String(Number(this.typedNumber) / 100);
-        DisplayCalculator.displayNumber(this.typedNumber, resultField);
+        DisplayCalculator.displayNumber(this.typedNumber, this.resultField);
     }
 
-    _handleDot(resultField) {
+    _handleDot() {
         if (!this.typedNumber.includes('.')) {
             this.typedNumber = this.typedNumber + '.';
         }
-        DisplayCalculator.displayNumber(this.typedNumber, resultField);
+        DisplayCalculator.displayNumber(this.typedNumber, this.resultField);
     }
 }
 
 class EventListener extends EventHandler {
-    constructor(container) {
-        super(container)
-        this.calculationField = this.container.querySelector('.calculations');
-        this.resultField = this.container.querySelector('.result');
-    }
-
     enableClickButton() {
         this.buttons.forEach(button => {
 
@@ -368,37 +367,37 @@ class EventListener extends EventHandler {
 
             if (button.classList.contains('btn-num')) {
                 button.addEventListener('click', () => {
-                    this._handleAssignNumber(value, this.resultField)
+                    this._handleAssignNumber(value)
                 })
 
             } else if (button.classList.contains('btn-operator')) {
                 button.addEventListener('click', () => {
-                    this._handleOperator(value, this.calculationField, this.resultField);
+                    this._handleOperator(value);
                 })
 
             } else if (button.classList.contains('btn-equal')) {
                 button.addEventListener('click', () => {
-                    this._handleEqualButton(this.calculationField, this.resultField);
+                    this._handleEqualButton();
                 })
 
             } else if (button.classList.contains('btn-ac')) {
                 button.addEventListener('click', () => {
-                    this._handleAC(this.calculationField, this.resultField);
+                    this._handleAC();
                 })
 
             } else if (button.classList.contains('btn-del')) {
                 button.addEventListener('click', () => {
-                    this._handleDEL(this.resultField);
+                    this._handleDEL();
                 })
 
             } else if (button.classList.contains('btn-percentage')) {
                 button.addEventListener('click', () => {
-                    this._handlePercentage(this.resultField);
+                    this._handlePercentage();
                 })
 
             } else if (button.classList.contains('btn-dot')) {
                 button.addEventListener('click', () => {
-                    this._handleDot(this.resultField);
+                    this._handleDot();
                 })
             }
         })
@@ -407,25 +406,25 @@ class EventListener extends EventHandler {
     enableKeyboardListener() {
         window.addEventListener('keydown', keydown => {
             if (!Number.isNaN(Number(keydown.key))) {
-                this._handleAssignNumber(keydown.key, this.resultField)
+                this._handleAssignNumber(keydown.key)
             }
             else if (keydown.key === '.') {
-                this._handleDot(this.resultField)
+                this._handleDot()
             }
             else if (keydown.key === '=' || keydown.key === 'Enter') {
-                this._handleEqualButton(this.calculationField, this.resultField)
+                this._handleEqualButton()
             }
             else if (keydown.key === 'Backspace') {
-                this._handleDEL(this.resultField)
+                this._handleDEL()
             }
             else if (keydown.key === 'Escape') {
-                this._handleAC(this.calculationField, this.resultField)
+                this._handleAC()
             }
             else if (keydown.key === '+'
                 || keydown.key === '-'
                 || keydown.key === '*'
                 || keydown.key === '/') {
-                this._handleOperator(keydown.key, this.calculationField, this.resultField)
+                this._handleOperator(keydown.key)
             }
         })
     }
