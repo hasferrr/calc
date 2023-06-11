@@ -177,7 +177,7 @@ class DisplayCalculator extends Calculator {
         buttons.forEach(button => {
             button.addEventListener('click', () => {
                 if (result.textContent === null) {
-
+                    // pass
                 } else if (result.textContent.length > 15) {
                     result.style.fontSize = DisplayCalculator.RESULT_FONT_SIZE * 0.5 + 'px'
                 } else if (result.textContent.length > 9) {
@@ -206,15 +206,10 @@ class Functionality extends Calculator {
      * @param {number} b
      */
     calculate(a, b) {
-        if (this.operator === '+') {
-            this.result = a + b;
-        } else if (this.operator === '-') {
-            this.result = a - b;
-        } else if (this.operator === 'x') {
-            this.result = a * b;
-        } else if (this.operator === '/') {
-            this.result = a / b;
-        }
+        if (this.operator === '+') this.result = a + b
+        else if (this.operator === '-') this.result = a - b
+        else if (this.operator === 'x') this.result = a * b
+        else if (this.operator === '/') this.result = a / b
     }
 }
 
@@ -277,9 +272,6 @@ class EventHandler extends Functionality {
         if (this.typedNumber !== '' && this.operator !== '' && this.operandLeft !== undefined) {
 
             if (this.operandRight === undefined) {
-                /**
-                 * copy typedNumber to operandRight
-                 */
                 this.operandRight = Number(this.typedNumber);
 
             } else if (this.operandRight !== undefined) {
@@ -315,7 +307,7 @@ class EventHandler extends Functionality {
     isInfinity() {
         // Any Infinity value (including Zero Division)
         if (this.result === Infinity) {
-            this._handleAC(this.calculationField, this.resultField);
+            this._handleAC();
             DisplayCalculator.displayCalculation('', '', '', this.calculationField);
             DisplayCalculator.displayNumber('Boom.', this.resultField);
             return 1;
@@ -366,60 +358,36 @@ class EventListener extends EventHandler {
             }
 
             if (button.classList.contains('btn-num')) {
-                button.addEventListener('click', () => {
-                    this._handleAssignNumber(value)
-                })
+                button.addEventListener('click', () => this._handleAssignNumber(value))
 
             } else if (button.classList.contains('btn-operator')) {
-                button.addEventListener('click', () => {
-                    this._handleOperator(value);
-                })
+                button.addEventListener('click', () => this._handleOperator(value))
 
             } else if (button.classList.contains('btn-equal')) {
-                button.addEventListener('click', () => {
-                    this._handleEqualButton();
-                })
+                button.addEventListener('click', () => this._handleEqualButton())
 
             } else if (button.classList.contains('btn-ac')) {
-                button.addEventListener('click', () => {
-                    this._handleAC();
-                })
+                button.addEventListener('click', () => this._handleAC())
 
             } else if (button.classList.contains('btn-del')) {
-                button.addEventListener('click', () => {
-                    this._handleDEL();
-                })
+                button.addEventListener('click', () => this._handleDEL())
 
             } else if (button.classList.contains('btn-percentage')) {
-                button.addEventListener('click', () => {
-                    this._handlePercentage();
-                })
+                button.addEventListener('click', () => this._handlePercentage())
 
             } else if (button.classList.contains('btn-dot')) {
-                button.addEventListener('click', () => {
-                    this._handleDot();
-                })
+                button.addEventListener('click', () => this._handleDot())
             }
         })
     }
 
     enableKeyboardListener() {
         window.addEventListener('keydown', keydown => {
-            if (!Number.isNaN(Number(keydown.key))) {
-                this._handleAssignNumber(keydown.key)
-            }
-            else if (keydown.key === '.') {
-                this._handleDot()
-            }
-            else if (keydown.key === '=' || keydown.key === 'Enter') {
-                this._handleEqualButton()
-            }
-            else if (keydown.key === 'Backspace') {
-                this._handleDEL()
-            }
-            else if (keydown.key === 'Escape') {
-                this._handleAC()
-            }
+            if (!Number.isNaN(Number(keydown.key))) this._handleAssignNumber(keydown.key)
+            else if (keydown.key === '.') this._handleDot()
+            else if (keydown.key === '=' || keydown.key === 'Enter') this._handleEqualButton()
+            else if (keydown.key === 'Backspace') this._handleDEL()
+            else if (keydown.key === 'Escape') this._handleAC()
             else if (keydown.key === '+'
                 || keydown.key === '-'
                 || keydown.key === '*'
