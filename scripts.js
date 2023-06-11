@@ -212,10 +212,10 @@ class EventHandler extends Functionality {
      * @param {string} value
      */
     _handleOperator(value, calculationField, resultField) {
+        this.operator = value;
         if (!this.justClickOperate) {
             this.operandLeft = Number(this.typedNumber);
             this.operandRight = undefined;
-            this.operator = value;
             this.resetTyping = true;
             this.typedNumber = '';
             this.justClickOperate = true;
