@@ -1,3 +1,3 @@
-# Calc
+# Calculator
 
-Practice DOM Manipulation using Object-Oriented Programming
+Calculator application that implements the **Object-Oriented Programming (OOP)** concept. The application is designed to allow users to perform basic mathematical operations such as addition, subtraction, multiplication, and division, with a simple and user-friendly interface. In the development of this application, OOP is utilized to separate the calculation logic and event handler from the user interface, enabling flexibility and easier future development.
