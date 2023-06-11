@@ -8,7 +8,6 @@ class Calculator {
         this.container = container;
 
         this.resetTyping = false;
-        this.justClickOperate = false;
 
         /** @type {string} */
         this.operator = '';
@@ -213,20 +212,11 @@ class EventHandler extends Functionality {
      * @param {string} value
      */
     _handleOperator(value, calculationField, resultField) {
-        if (this.justClickOperate) {
-            /**
-             * sometimes user want to calculate without clicking '=' button
-             * and directly press another operator button
-             * in that case, we will calculate first before into the new operator state
-             */
-            this._handleEqualButton(calculationField, resultField);
-        }
-
         this.operandLeft = Number(this.typedNumber);
+        this.operandRight = undefined;
         this.operator = value;
         this.resetTyping = true;
         this.typedNumber = '';
-        this.justClickOperate = true;
     }
 
     _handleEqualButton(calculationField, resultField) {
@@ -266,7 +256,6 @@ class EventHandler extends Functionality {
                 this.operator, calculationField);
             DisplayCalculator.displayNumber(this.result, resultField);
 
-            this.justClickOperate = false;
             this.typedNumber = String(this.result);
         }
     }
@@ -323,6 +312,7 @@ class OnClickEvents extends AbstractEventWrapper {
             } else if (button.classList.contains('btn-operator')) {
                 button.addEventListener('click', () => {
                     this._handleOperator(value, calculationField, resultField)
+                    DisplayCalculator.displayNumber(this.typedNumber, resultField);
                     DisplayCalculator.displayCalculation(this.operandLeft, '',
                         this.operator, calculationField);
                 })
