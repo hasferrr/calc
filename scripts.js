@@ -345,9 +345,7 @@ class EventHandler extends Functionality {
     }
 }
 
-class AbstractEventWrapper extends EventHandler { }
-
-class OnClickEvents extends AbstractEventWrapper {
+class EventListener extends EventHandler {
     enableClickButton() {
         this.buttons.forEach(button => {
 
@@ -404,8 +402,6 @@ class OnClickEvents extends AbstractEventWrapper {
     }
 }
 
-class KeyboardEvents extends AbstractEventWrapper { }
-
 let calculator; //@ts-ignore
 calculator = new DisplayCalculator(document.querySelector('.container'));
 calculator.displayCalculatorScreen();
@@ -414,5 +410,5 @@ calculator.displayButtonText();
 calculator.displayCalculationText();
 calculator.enableDynamicFontSize();
 
-calculator = new OnClickEvents(calculator.container);
+calculator = new EventListener(calculator.container);
 calculator.enableClickButton();
