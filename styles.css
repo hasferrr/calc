@@ -27,11 +27,20 @@ body {
     align-items: center;
 }
 
-.result,
+.result {
+    align-items: last baseline;
+    display: flex;
+    justify-content: right;
+    text-align: right;
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
 .calculations {
     align-items: last baseline;
     display: flex;
     justify-content: right;
+    text-align: right;
 }
 
 .row {

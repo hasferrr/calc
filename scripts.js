@@ -48,6 +48,8 @@ class DisplayCalculator extends Calculator {
     static SCALE = 1.15;
     static WIDTH = 290 * DisplayCalculator.SCALE;
     static HEIGHT = 560 * DisplayCalculator.SCALE;
+    static CALCULATION_FONT_SIZE = 18 * DisplayCalculator.SCALE;
+    static RESULT_FONT_SIZE = 38 * DisplayCalculator.SCALE;
 
     /**
      * @param {HTMLElement} container
@@ -118,7 +120,6 @@ class DisplayCalculator extends Calculator {
         const display = document.querySelector('.display');
         const calculations = document.createElement('div');
         const result = document.createElement('div');
-        const box = document.createElement('div');
 
         //@ts-ignore
         const DISPLAY_HEIGHT = Number(display.style.height.slice(0, -2)); //remove 'px'
@@ -130,23 +131,23 @@ class DisplayCalculator extends Calculator {
         let height = 80;
         let width = DisplayCalculator.WIDTH / DisplayCalculator.SCALE - 30;
 
-        box.style.height = 20 * DisplayCalculator.SCALE + 'px';
         calculations.style.height = DISPLAY_HEIGHT - height * DisplayCalculator.SCALE + 'px';
         result.style.height = height * DisplayCalculator.SCALE + 'px';
 
         calculations.style.width = width * DisplayCalculator.SCALE + 'px';
         result.style.width = width * DisplayCalculator.SCALE + 'px';
 
-        calculations.style.fontSize = 18 * DisplayCalculator.SCALE + 'px';
-        result.style.fontSize = 42 * DisplayCalculator.SCALE + 'px';
+        calculations.style.fontSize = DisplayCalculator.CALCULATION_FONT_SIZE + 'px';
+        result.style.fontSize = DisplayCalculator.RESULT_FONT_SIZE + 'px';
+
+        calculations.style.marginTop = 20 * DisplayCalculator.SCALE + 'px';
+        result.style.marginBottom = 20 * DisplayCalculator.SCALE + 'px';
 
         result.textContent = '0';
 
         // Append to .display
-        display?.appendChild(box);
         display?.appendChild(calculations);
         display?.appendChild(result);
-        display?.appendChild(box.cloneNode(true));
     }
 
     static displayNumber(text, resultField) {
@@ -163,6 +164,29 @@ class DisplayCalculator extends Calculator {
     static displayClear(calculationField, resultField) {
         calculationField.textContent = '';
         resultField.textContent = '0';
+    }
+
+    enableDynamicFontSize() {
+        /**
+         * @type {HTMLElement} result
+         */
+        //@ts-ignore
+        const result = document.querySelector('.result');
+        const buttons = document.querySelectorAll('button');
+
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                if (result.textContent === null) {
+
+                } else if (result.textContent.length > 15) {
+                    result.style.fontSize = DisplayCalculator.RESULT_FONT_SIZE * 0.5 + 'px'
+                } else if (result.textContent.length > 9) {
+                    result.style.fontSize = DisplayCalculator.RESULT_FONT_SIZE * 0.7 + 'px'
+                } else {
+                    result.style.fontSize = DisplayCalculator.RESULT_FONT_SIZE + 'px'
+                }
+            })
+        })
     }
 }
 
@@ -388,6 +412,7 @@ calculator.displayCalculatorScreen();
 calculator.displayButton();
 calculator.displayButtonText();
 calculator.displayCalculationText();
+calculator.enableDynamicFontSize();
 
 calculator = new OnClickEvents(calculator.container);
 calculator.enableClickButton();
