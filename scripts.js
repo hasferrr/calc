@@ -351,6 +351,12 @@ class EventHandler extends Functionality {
 }
 
 class EventListener extends EventHandler {
+    constructor(container) {
+        super(container)
+        this.calculationField = this.container.querySelector('.calculations');
+        this.resultField = this.container.querySelector('.result');
+    }
+
     enableClickButton() {
         this.buttons.forEach(button => {
 
@@ -360,43 +366,66 @@ class EventListener extends EventHandler {
                 value = button.dataset.value;
             }
 
-            let calculationField = this.container.querySelector('.calculations');
-            let resultField = this.container.querySelector('.result');
-
             if (button.classList.contains('btn-num')) {
                 button.addEventListener('click', () => {
-                    this._handleAssignNumber(value, resultField)
+                    this._handleAssignNumber(value, this.resultField)
                 })
 
             } else if (button.classList.contains('btn-operator')) {
                 button.addEventListener('click', () => {
-                    this._handleOperator(value, calculationField, resultField);
+                    this._handleOperator(value, this.calculationField, this.resultField);
                 })
 
             } else if (button.classList.contains('btn-equal')) {
                 button.addEventListener('click', () => {
-                    this._handleEqualButton(calculationField, resultField);
+                    this._handleEqualButton(this.calculationField, this.resultField);
                 })
 
             } else if (button.classList.contains('btn-ac')) {
                 button.addEventListener('click', () => {
-                    this._handleAC(calculationField, resultField);
+                    this._handleAC(this.calculationField, this.resultField);
                 })
 
             } else if (button.classList.contains('btn-del')) {
                 button.addEventListener('click', () => {
-                    this._handleDEL(resultField);
+                    this._handleDEL(this.resultField);
                 })
 
             } else if (button.classList.contains('btn-percentage')) {
                 button.addEventListener('click', () => {
-                    this._handlePercentage(resultField);
+                    this._handlePercentage(this.resultField);
                 })
 
             } else if (button.classList.contains('btn-dot')) {
                 button.addEventListener('click', () => {
-                    this._handleDot(resultField);
+                    this._handleDot(this.resultField);
                 })
+            }
+        })
+    }
+
+    enableKeyboardListener() {
+        window.addEventListener('keydown', keydown => {
+            if (!Number.isNaN(Number(keydown.key))) {
+                this._handleAssignNumber(keydown.key, this.resultField)
+            }
+            else if (keydown.key === '.') {
+                this._handleDot(this.resultField)
+            }
+            else if (keydown.key === '=' || keydown.key === 'Enter') {
+                this._handleEqualButton(this.calculationField, this.resultField)
+            }
+            else if (keydown.key === 'Backspace') {
+                this._handleDEL(this.resultField)
+            }
+            else if (keydown.key === 'Escape') {
+                this._handleAC(this.calculationField, this.resultField)
+            }
+            else if (keydown.key === '+'
+                || keydown.key === '-'
+                || keydown.key === '*'
+                || keydown.key === '/') {
+                this._handleOperator(keydown.key, this.calculationField, this.resultField)
             }
         })
     }
@@ -412,3 +441,4 @@ calculator.enableDynamicFontSize();
 
 calculator = new EventListener(calculator.container);
 calculator.enableClickButton();
+calculator.enableKeyboardListener();
