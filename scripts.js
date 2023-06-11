@@ -222,7 +222,7 @@ class EventHandler extends Functionality {
     /**
      * @param {string} value
      */
-    _handleAssignNumber(value) {
+    _handleAssignNumber(value, resultField) {
         if ((!Number(this.typedNumber) || this.resetTyping) && this.typedNumber !== '0.') {
             this.typedNumber = value;
             this.resetTyping = false;
@@ -230,6 +230,7 @@ class EventHandler extends Functionality {
             this.typedNumber = this.typedNumber + value; //append string
             this.resetTyping = false;
         }
+        DisplayCalculator.displayNumber(this.typedNumber, resultField);
     }
 
     /**
@@ -309,15 +310,15 @@ class EventHandler extends Functionality {
     isInfinity(calculationField, resultField) {
         // Any Infinity value (including Zero Division)
         if (this.result === Infinity) {
+            this._handleAC(calculationField, resultField);
             DisplayCalculator.displayCalculation('', '', '', calculationField);
             DisplayCalculator.displayNumber('Boom.', resultField);
-            this._handleAC();
             return 1;
         }
         return 0;
     }
 
-    _handleAC() {
+    _handleAC(calculationField, resultField) {
         this.typedNumber = '';
         this.operator = '';
         this.operandLeft = undefined;
@@ -325,23 +326,27 @@ class EventHandler extends Functionality {
         this.result = 0;
         this.resetTyping = false;
         this.justClickOperate = false;
+        DisplayCalculator.displayClear(calculationField, resultField);
     }
 
-    _handleDEL() {
+    _handleDEL(resultField) {
         this.typedNumber = this.typedNumber.slice(0, -1);
         if (this.typedNumber === '') {
             this.typedNumber = '0';
         }
+        DisplayCalculator.displayNumber(this.typedNumber, resultField);
     }
 
-    _handlePercentage() {
+    _handlePercentage(resultField) {
         this.typedNumber = String(Number(this.typedNumber) / 100);
+        DisplayCalculator.displayNumber(this.typedNumber, resultField);
     }
 
-    _handleDot() {
+    _handleDot(resultField) {
         if (!this.typedNumber.includes('.')) {
             this.typedNumber = this.typedNumber + '.';
         }
+        DisplayCalculator.displayNumber(this.typedNumber, resultField);
     }
 }
 
@@ -360,8 +365,7 @@ class EventListener extends EventHandler {
 
             if (button.classList.contains('btn-num')) {
                 button.addEventListener('click', () => {
-                    this._handleAssignNumber(value)
-                    DisplayCalculator.displayNumber(this.typedNumber, resultField);
+                    this._handleAssignNumber(value, resultField)
                 })
 
             } else if (button.classList.contains('btn-operator')) {
@@ -376,26 +380,22 @@ class EventListener extends EventHandler {
 
             } else if (button.classList.contains('btn-ac')) {
                 button.addEventListener('click', () => {
-                    this._handleAC();
-                    DisplayCalculator.displayClear(calculationField, resultField);
+                    this._handleAC(calculationField, resultField);
                 })
 
             } else if (button.classList.contains('btn-del')) {
                 button.addEventListener('click', () => {
-                    this._handleDEL();
-                    DisplayCalculator.displayNumber(this.typedNumber, resultField);
+                    this._handleDEL(resultField);
                 })
 
             } else if (button.classList.contains('btn-percentage')) {
                 button.addEventListener('click', () => {
-                    this._handlePercentage();
-                    DisplayCalculator.displayNumber(this.typedNumber, resultField);
+                    this._handlePercentage(resultField);
                 })
 
             } else if (button.classList.contains('btn-dot')) {
                 button.addEventListener('click', () => {
-                    this._handleDot();
-                    DisplayCalculator.displayNumber(this.typedNumber, resultField);
+                    this._handleDot(resultField);
                 })
             }
         })
