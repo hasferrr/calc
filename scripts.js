@@ -295,8 +295,8 @@ class EventHandler extends Functionality {
     }
 
     isInfinity() {
-        // Any Infinity value (including Zero Division)
-        if (this.result === Infinity) {
+        // Any Infinity (i mean undefined) value (including Zero Division)
+        if (this.result === undefined) {
             this._handleAC();
             DisplayCalculator.displayCalculation('', '', '', this.calculationField);
             DisplayCalculator.displayNumber('Boom.', this.resultField);
