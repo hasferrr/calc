@@ -197,6 +197,7 @@ class Functionality extends Calculator {
         else if (this.operator === '/') {
             if (b === 0) {
                 this.result = undefined;
+                return;
             }
             this.result = a / b
         }
