@@ -7,8 +7,6 @@ class Calculator {
     constructor(container) {
         this.container = container;
 
-        this.resetTyping = false;
-
         /** @type {string} */
         this.operator = '';
         /** @type {string} */
@@ -175,6 +173,8 @@ class Functionality extends Calculator {
     constructor(container) {
         super(container);
         this.buttons = this.container.querySelectorAll('button');
+        this.resetTyping = false;
+        this.justClickOperate = false;
     }
 
     calculate(a, b) {
@@ -212,11 +212,14 @@ class EventHandler extends Functionality {
      * @param {string} value
      */
     _handleOperator(value, calculationField, resultField) {
-        this.operandLeft = Number(this.typedNumber);
-        this.operandRight = undefined;
-        this.operator = value;
-        this.resetTyping = true;
-        this.typedNumber = '';
+        if (!this.justClickOperate) {
+            this.operandLeft = Number(this.typedNumber);
+            this.operandRight = undefined;
+            this.operator = value;
+            this.resetTyping = true;
+            this.typedNumber = '';
+            this.justClickOperate = true;
+        }
     }
 
     _handleEqualButton(calculationField, resultField) {
@@ -257,6 +260,8 @@ class EventHandler extends Functionality {
             DisplayCalculator.displayNumber(this.result, resultField);
 
             this.typedNumber = String(this.result);
+
+            this.justClickOperate = false;
         }
     }
 
