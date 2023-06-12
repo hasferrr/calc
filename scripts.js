@@ -388,6 +388,7 @@ class EventListener extends EventHandler {
                 || keydown.key === 'x'
                 || keydown.key === '/') {
                 this._handleOperator(keydown.key)
+                keydown.preventDefault()
             }
         })
     }
