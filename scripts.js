@@ -150,13 +150,16 @@ class DisplayCalculator extends Calculator {
         display?.appendChild(result);
     }
 
+    /**
+     * @param {string | undefined} text
+     */
     static displayNumber(text, resultField) {
-        if (text === '') {
+        if (!text) {
             text = '0';
         }
-        if (resultField.textContent.length > 15) {
+        if (text.length > 15) {
             resultField.style.fontSize = DisplayCalculator.RESULT_FONT_SIZE * 0.5 + 'px'
-        } else if (resultField.textContent.length > 9) {
+        } else if (text.length > 9) {
             resultField.style.fontSize = DisplayCalculator.RESULT_FONT_SIZE * 0.7 + 'px'
         } else {
             resultField.style.fontSize = DisplayCalculator.RESULT_FONT_SIZE + 'px'
@@ -287,7 +290,7 @@ class EventHandler extends Functionality {
 
             DisplayCalculator.displayCalculation(this.operandLeft, this.operandRight,
                 this.operator, this.calculationField);
-            DisplayCalculator.displayNumber(this.result, this.resultField);
+            DisplayCalculator.displayNumber(String(this.result), this.resultField);
 
             this.typedNumber = String(this.result);
 
