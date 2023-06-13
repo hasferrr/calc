@@ -238,7 +238,7 @@ class EventHandler extends Functionality {
              * In that case, we will calculate first before jump into the new operator state
              */
             this.calculate(Number(this.operandLeft), Number(this.typedNumber))
-            if (this.isInfinity()) {
+            if (this.#isInfinity()) {
                 return;
             }
             this.operator = value;
@@ -284,7 +284,7 @@ class EventHandler extends Functionality {
              * copy this.result to this.typedNumber
              */
             this.calculate(this.operandLeft, this.operandRight);
-            if (this.isInfinity()) {
+            if (this.#isInfinity()) {
                 return;
             }
 
@@ -298,7 +298,7 @@ class EventHandler extends Functionality {
         }
     }
 
-    isInfinity() {
+    #isInfinity() {
         // Any Infinity (i mean undefined) value (including Zero Division)
         if (this.result === undefined) {
             this._handleAC();
@@ -385,8 +385,8 @@ class EventListener extends EventHandler {
             else if (keydown.key === '+'
                 || keydown.key === '-'
                 || keydown.key === '*'
-                || keydown.key === 'x'
-                || keydown.key === '/') {
+                || keydown.key === 'x') this._handleOperator(keydown.key)
+            else if (keydown.key === '/') {
                 this._handleOperator(keydown.key)
                 keydown.preventDefault()
             }
